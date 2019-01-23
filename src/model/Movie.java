@@ -2,15 +2,24 @@ package model;
 
 public class Movie {
 
-	long movieID;
-	String title;
-	int rating;
-	String genre;
+	private long movieID;
+	private String title;
+	private int rating;
+	private String genre;
+	private int cinemaNum;
 	
-	public Movie(){
-		
+	public Movie(long movieID, String title, int cinemaNum){
+		setCinemaNum(cinemaNum);
+		setMovieID(movieID);
+		setTitle(title);
 	}
 	
+	public Movie(int movieID2, String title2, int cinemaNum2) {
+		setCinemaNum(cinemaNum2);
+		setMovieID(movieID2);
+		setTitle(title2);
+	}
+
 	public void setMovieID(long movieID){
 		this.movieID = movieID;
 	}
@@ -34,5 +43,13 @@ public class Movie {
 	}
 	public String getGenre(){
 		return genre;
+	}
+
+	public int getCinemaNum() {
+		return cinemaNum;
+	}
+
+	public void setCinemaNum(int cinemaNum) {
+		this.cinemaNum = cinemaNum;
 	}
 }
