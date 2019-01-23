@@ -1,69 +1,46 @@
 package model;
 
-import java.util.Date;
+import java.io.Serializable;
 
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-
-@XmlRootElement
-public class Customer {
-	private long customerID;
-	private String firstName;
-	private String middleName;
-	private String lastName;
-	private Date birthDay;
-	
+/**
+ * 
+ * @author april.padrigano
+ * Description: Customer class model with setters and getters
+ * Date Modified: 1-21-2019 8:00 pm
+ */
+public class Customer implements Serializable {
+	private long customer_ID;
+	private String name;
+	private String middle_name;
+	private String last_name;
 	public Customer(){
-		
+		name = new String();
+		customer_ID = 0;
+		middle_name = new String();
+		last_name = new String();
 	}
-
-	public Customer(String firstName, String lastName, long customerId){
-		setName(firstName);
-		setLastName(lastName);
-		setCustomerID(customerId);;
+	/**
+	 * Description: Constructor of class that sets the name.
+	 * @param name
+	 */
+	public Customer(long customer_ID, String name,String middle_name, String last_name){
+		this.customer_ID = customer_ID;
+		this.name = name;
+		this.middle_name = middle_name;
+		this.last_name = last_name;
 	}
-	
-	@XmlElement
 	public void setCustomerID(long customerID){
-		this.customerID = customerID;
+		this.customer_ID = customerID;
 	}
 	public long getCustomerID(){
-		return customerID;
+		return customer_ID;
 	}
-	
-	@XmlElement
 	public void setName(String str){
-		this.firstName = str;
-		System.out.println("New customer is " + this.firstName);
+		name = str;
+		
 	}
 	public String getName(){
-		System.out.println("Returned " + this.firstName);
-		return this.firstName;
-	}
-	
-	public String getLastName() {
-		return lastName;
-	}
-	
-	@XmlElement
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
-	}
-
-	public String getMiddleName() {
-		return middleName;
-	}
-
-	public void setMiddleName(String middleName) {
-		this.middleName = middleName;
-	}
-
-	public Date getBirthDay() {
-		return birthDay;
-	}
-
-	public void setBirthDay(Date birthDay) {
-		this.birthDay = birthDay;
+		return name;
 	}
 	
 }

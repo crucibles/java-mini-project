@@ -1,30 +1,41 @@
 package model;
 
-public class Movie {
+import java.io.Serializable;
 
-	private long movieID;
-	private String title;
-	private int rating;
-	private String genre;
+/**
+ * 
+ * @author april.padrigano
+ *Description: Class movie with setters and getters.
+ *Date Modified: 1-21-2019 8:00 pm
+ */
+public class Movie implements Serializable {
+
+	long movie_id;
+	String title;
+	int rating;
+	String genre;
 	private int cinemaNum;
 	
-	public Movie(long movieID, String title, int cinemaNum){
-		setCinemaNum(cinemaNum);
-		setMovieID(movieID);
-		setTitle(title);
+	public Movie(){
+		movie_id = 0;
+		title = "";
+		rating = 0;
+		genre = "";
+		
+	}
+	public Movie(long movie_id, String title, int rating, String genre, int cinemaNum){
+		this.movie_id = movie_id;
+		this.title = title;
+		this.rating = rating;
+		this.genre = genre;
+		this.cinemaNum = cinemaNum;
 	}
 	
-	public Movie(int movieID2, String title2, int cinemaNum2) {
-		setCinemaNum(cinemaNum2);
-		setMovieID(movieID2);
-		setTitle(title2);
-	}
-
-	public void setMovieID(long movieID){
-		this.movieID = movieID;
+	public void setMovieID(long movie_id){
+		this.movie_id = movie_id;
 	}
 	public long getMovieID(){
-		return movieID;
+		return movie_id;
 	}
 	public void setTitle(String title){
 		this.title = title;
@@ -44,11 +55,9 @@ public class Movie {
 	public String getGenre(){
 		return genre;
 	}
-
 	public int getCinemaNum() {
 		return cinemaNum;
 	}
-
 	public void setCinemaNum(int cinemaNum) {
 		this.cinemaNum = cinemaNum;
 	}
