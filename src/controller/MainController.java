@@ -16,6 +16,7 @@ public class MainController {
 	private static FilesManager files_manager;
 	private static String movie_path = "movie_records.txt";
 	private static String customer_path = "customer_records.txt";
+	private static String cinema_path = "cinema_records.txt";
 	private static PopulateFiles populateFiles;
 	/**
 	 * Initial Author: Padrigano
@@ -30,12 +31,12 @@ public class MainController {
 		int cinema_num = 1;
 		ArrayList<Movie> movie_list = new ArrayList<>();
 		ArrayList<Cinema> cinema_list = new ArrayList<>();
-		cinema_list = new ArrayList<Cinema>();
-		//---
+		ArrayList<Customer> customer_list = new ArrayList<>();
+ 		//---
 		files_manager = new FilesManager();
 		files_manager.createFile(movie_path);
 		files_manager.createFile(customer_path);
-		populateFiles = new PopulateFiles(files_manager);
+		
 		//build cinema
 
 		menu = new Menus();
@@ -53,11 +54,10 @@ public class MainController {
 					temp_movie.setCinemaNum(2);
 					//haven't assigned the Cinema number in movie input
 					Cinema c = new Cinema(temp_movie.getCinemaNum());
-					c.setMovie(temp_movie);
+					c.setMovie_id(temp_movie.getMovieID());
 					cinema_list.add(c);
 					files_manager.saveObjectFirstTime(temp_movie, movie_path);
 
-					menu.displaySeatPlan(cinema_list.get(0));
 				}else{
 					System.out.println("More than 1 record exists");
 					temp_movie.setMovieID(temp_id++);
@@ -67,10 +67,12 @@ public class MainController {
 				//menu
 				menu.displayMovieView(movie_path ,movie_list);
 			}else if(choice == 'c'){//create booking
-//				menu.createBookingView();
+				menu.createBookingView(movie_path, customer_path, cinema_path, cinema_list, movie_list, customer_list );
 				
 			}else if(choice == 'd'){//cancel booking
 				menu.cancelBookingView();
+			} else {
+				choice = menu.startingMenu();
 			}
 			//break;
 		}while(choice != 'e');

@@ -18,7 +18,7 @@ public class Movie implements Serializable {
 	String genre;
 	private int cinema_num;
 	private float price;
-	private MovieSched movie_sched;
+	private MovieSched movie_sched = new MovieSched();
 	
 	public Movie(){
 		movie_id = 0;
@@ -27,8 +27,7 @@ public class Movie implements Serializable {
 		genre = "";
 		cinema_num = 0;
 		setPrice(0);
-		setMovie_sched(new MovieSched(new Date(), new Date(), new Time(0), new Time(0)));
-		
+		setMovie_sched(movie_sched);
 	}
 	
 	public Movie(long movie_id, String title, int rating, String genre, int cinemaNum, MovieSched movie_sched){

@@ -39,8 +39,9 @@ public class Menus {
 		System.out.println("D.Cancel Booking");
 		System.out.println("E.Exit");
 		System.out.printf("[Input]");
-		while (sc.hasNextLine()) {
-			choice = sc.nextLine().charAt(0);
+
+		while (sc.hasNext()) {
+			choice = sc.next().charAt(0);
 			break;
 		}
 
@@ -60,10 +61,10 @@ public class Menus {
 		int rating = 0;
 		try {
 			System.out.println("Enter title:");
-			title = sc.nextLine();
+			title = sc.next();
 			movie.setTitle(title);
 			System.out.println("Enter genre:");
-			genre = sc.nextLine();
+			genre = sc.next();
 			if (error_trap.isLegitString(genre)) {
 				genre = genre.toLowerCase();
 				if (error_trap.isLegitGenre(genre)) {
@@ -79,7 +80,7 @@ public class Menus {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		sc.close();
+
 		return movie;// return movie that has details
 	}
 
@@ -97,7 +98,36 @@ public class Menus {
 		}
 	}
 
-	public void createBookingView(ArrayList<Cinema> cinema_list, ArrayList<Movie> movie_list, ArrayList<Customer> customer_list) {// add more as needed
+	public void createBookingView(String movie_path, String customer_path, String cinema_path,
+			ArrayList<Cinema> cinema_list, ArrayList<Movie> movie_list, ArrayList<Customer> customer_list) {// add
+																											// more
+																											// as
+																											// needed
+
+		File movie = new File(movie_path);
+
+		if (error_trap.isEmpty(movie) == true) {
+			System.out.println("File is Empty!");
+		}
+
+		movie_list = files_manager.readMultipleObjects(movie_path, movie_list);
+
+		File customer = new File(customer_path);
+
+		if (error_trap.isEmpty(customer) == true) {
+			System.out.println("File is Empty!");
+		}
+
+		customer_list = files_manager.readMultipleObjects(customer_path, customer_list);
+
+		File cinema = new File(cinema_path);
+
+		if (error_trap.isEmpty(cinema) == true) {
+			System.out.println("File is Empty!");
+		}
+
+		// cinema_list = files_manager.readMultipleObjects(cinema_path,
+		// cinema_list);
 
 		System.out.print("Enter cinema num: ");
 		int cinema_num = sc.nextInt();
@@ -107,6 +137,13 @@ public class Menus {
 
 		System.out.println("Enter movie id");
 		long movie_id = sc.nextLong();
+
+		for (Cinema c : cinema_list) {
+			if (c.getCinema_id() == cinema_num && c.getMovie_id() == movie_id) {
+				System.out.println("cinema is found");
+			}
+			// something here
+		}
 
 	}
 
@@ -119,7 +156,7 @@ public class Menus {
 		for (char a = 'A'; a < 'O'; a++) {
 			for (int b = 1; b <= 10; b++) {
 
-				System.out.print(a + ": " + b + " status: " + cinema.getSeatList() + " |");
+				System.out.print(a + ": " + b + " status: " + cinema.getSeat_list() + " |");
 			}
 			System.out.println();
 		}
