@@ -28,15 +28,16 @@ public class MainController {
 		char choice;
 		int temp_id = 0;
 		int cinema_num = 1;
-		ArrayList<Movie> movie_list = null;
-		ArrayList<Cinema> cinema_list = null;
+		ArrayList<Movie> movie_list = new ArrayList<>();
+		ArrayList<Cinema> cinema_list = new ArrayList<>();
+		cinema_list = new ArrayList<Cinema>();
 		//---
 		files_manager = new FilesManager();
 		files_manager.createFile(movie_path);
 		files_manager.createFile(customer_path);
 		populateFiles = new PopulateFiles(files_manager);
 		//build cinema
-		cinema_list = new ArrayList<Cinema>();
+
 		menu = new Menus();
 		
 		do{
@@ -64,9 +65,10 @@ public class MainController {
 				}	
 			}else if(choice == 'b'){//display movies
 				//menu
-				menu.displayMovieView(movie_list);
+				menu.displayMovieView(movie_path ,movie_list);
 			}else if(choice == 'c'){//create booking
-				menu.createBookingView();
+//				menu.createBookingView();
+				
 			}else if(choice == 'd'){//cancel booking
 				menu.cancelBookingView();
 			}
@@ -74,6 +76,8 @@ public class MainController {
 		}while(choice != 'e');
 		
 	}
+	
+
 	
 	
 	
