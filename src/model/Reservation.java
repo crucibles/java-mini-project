@@ -6,16 +6,15 @@ import java.util.List;
 public class Reservation {
 	private long reservation_id;
 	private long customer_id;
-	private List<Booking> reservations = new ArrayList<Booking>();
+	private List<Booking> bookings;
 	
 	public Reservation(){
-		System.out.println("hello new reservation");
+		bookings = new ArrayList<Booking>();
 	}
 	
-	public Reservation(long customerId, List<Booking> bookings){
+	public Reservation(long customerId){
 		setCustomer_id(customerId);
-		// setReservation_id(); call function getLatest reservationId
-		setReservations(bookings);
+		setBookings(bookings);
 	}
 	
 	public long getReservation_id() {
@@ -31,12 +30,12 @@ public class Reservation {
 		this.customer_id = customer_id;
 	}
 
-	public List<Booking> getReservations() {
-		return reservations;
+	public List<Booking> getBookings() {
+		return bookings;
 	}
 
-	public void setReservations(List<Booking> reservations) {
-		this.reservations = reservations;
+	public void setBookings(List<Booking> reservations) {
+		this.bookings = reservations;
 	}
 	
 	public void displaySeatPlan(long movieId){

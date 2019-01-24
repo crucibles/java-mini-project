@@ -65,13 +65,10 @@ public class ErrorTrap {
 		return result;
 	}
 
-	public boolean isEmpty(File f) {
-		// TODO Auto-generated method stub
-		if (f == null) {
-			return true;
-		} else {
-			return false;
-		}
-		
+	public boolean isEmpty(File movie){
+		if (movie.length() == 0)
+         return true;
+        else
+         return false;
 	}
 }

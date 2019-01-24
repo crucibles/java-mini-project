@@ -9,7 +9,6 @@ public class PopulateFiles {
 	private String movie_path = "movie_records.txt";
 	private String customer_path = "customer_records.txt";
 	public PopulateFiles(FilesManager x){
-		populateMovies(x);
 		populateCustomers(x);
 	}
 	public void populateMovies(FilesManager x){

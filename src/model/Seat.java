@@ -1,6 +1,8 @@
 package model;
 
-public abstract class Seat {
+import java.io.Serializable;
+
+public abstract class Seat implements Serializable {
 
 	private char seatRow = 'A';
 	private int seatNum = 0;

@@ -1,16 +1,21 @@
 package model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Cinema {
+public class Cinema implements Serializable {
 	private int cinema_id;
 	private ArrayList<Seat> seat_list = new ArrayList<>();
 	private long movie_id;
 	private ArrayList<Reservation> reservations = new ArrayList<>();
 
-	public Cinema(int cinema_id) {
+	public Cinema(){
+		
+	}
+	
+	public Cinema(int cinema_id, long movie_id) {
 		setCinema_id(cinema_id);
-		setMovie_id(cinema_id);
+		setMovie_id(movie_id);
 		setSeat_list(seat_list);
 		setReservations(reservations);
 		initializeSeatList();
@@ -18,7 +23,7 @@ public class Cinema {
 	
 
 	public void initializeSeatList() {
-		for (char a = 'A'; a < 'O'; a++) {
+		for (char a = 'A'; a <= 'O'; a++) {
 			for (int b = 1; b <= 10; b++) {
 				if(a >= 'F' && a <= 'J' ){//hot
 					getSeat_list().add(new HotSeat(a,b,false));
@@ -32,7 +37,7 @@ public class Cinema {
 
 	public boolean isAvailable(Seat seat){
 		
-		for (char a = 'A'; a < 'O'; a++) {
+		for (char a = 'A'; a <= 'O'; a++) {
 			for (int b = 1; b <= 10; b++) {
 				if(seat.getSeatRow() == a && seat.getSeatNum() == b){
 					if(seat.isReserved()){
