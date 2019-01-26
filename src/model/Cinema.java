@@ -1,57 +1,32 @@
 package model;
 
-import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 
-public class Cinema implements Serializable {
+import services.CinemaService;
+
+public class Cinema {
 	private int cinema_id;
-	private ArrayList<Seat> seat_list = new ArrayList<>();
+	private ArrayList<Seat> seat_list;
 	private long movie_id;
-	private ArrayList<Reservation> reservations = new ArrayList<>();
+	private ArrayList<Reservation> reservations;
+	private CinemaService cs;
+	private Date cinema_date;
 
 	public Cinema(){
-		
+		reservations = new ArrayList<>();
+		seat_list = new ArrayList<>();
+		cs = new CinemaService();
 	}
 	
 	public Cinema(int cinema_id, long movie_id) {
+		reservations = new ArrayList<>();
+		seat_list = new ArrayList<>();
 		setCinema_id(cinema_id);
 		setMovie_id(movie_id);
-		setSeat_list(seat_list);
-		setReservations(reservations);
-		initializeSeatList();
+		cs = new CinemaService();
+		cs.initializeSeatList(this);
 	}
-	
-
-	public void initializeSeatList() {
-		for (char a = 'A'; a <= 'O'; a++) {
-			for (int b = 1; b <= 10; b++) {
-				if(a >= 'F' && a <= 'J' ){//hot
-					getSeat_list().add(new HotSeat(a,b,false));
-				}else{
-					getSeat_list().add(new RegularSeat(a,b,false));
-				}
-			}
-		}
-	}
-	
-
-	public boolean isAvailable(Seat seat){
-		
-		for (char a = 'A'; a <= 'O'; a++) {
-			for (int b = 1; b <= 10; b++) {
-				if(seat.getSeatRow() == a && seat.getSeatNum() == b){
-					if(seat.isReserved()){
-						return false;
-					} else {						
-						break;
-					}
-				}
-			}
-		}
-		
-		return true;
-	}
-
 
 	public long getMovie_id() {
 		return movie_id;
@@ -90,6 +65,22 @@ public class Cinema implements Serializable {
 
 	public void setReservations(ArrayList<Reservation> reservations) {
 		this.reservations = reservations;
+	}
+
+	public CinemaService getCs() {
+		return cs;
+	}
+
+	public void setCs(CinemaService cs) {
+		this.cs = cs;
+	}
+
+	public Date getCinema_date() {
+		return cinema_date;
+	}
+
+	public void setCinema_date(Date cinema_date) {
+		this.cinema_date = cinema_date;
 	}
 
 

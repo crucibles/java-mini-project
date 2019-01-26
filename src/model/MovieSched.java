@@ -1,67 +1,73 @@
 package model;
 
-import java.io.Serializable;
-import java.sql.Time;
-import java.util.Date;
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.Period;
 
-public class MovieSched implements Serializable {
+import javax.xml.bind.annotation.XmlRootElement;
 
-	private Date start_date;
-	private Date end_date;
-	private Time start_time;
-	private Time end_time;
+@XmlRootElement(name = "schedule")
+public class MovieSched {
+
+	private LocalDate start_date;
+	private LocalDate end_date;
+	private LocalTime start_time;
+	private LocalTime end_time;
 	private int number_of_days;
-	private Time duration;
+	private Duration duration;
 
-	
 	public MovieSched() {
-		setStart_date(new Date());
-		setEnd_date(new Date());
-		setStart_time(new Time(0));
-		setEnd_time(new Time(0));
-		setNumber_of_days((int) (end_date.getTime() - start_date.getTime()));
-		setDuration(new Time(end_time.getTime() - start_time.getTime()));
-	}
-	
-	
-	public MovieSched(Date start_date, Date end_Date, Time start_time, Time end_time) {
-		setStart_date(start_date);
-		setEnd_date(end_date);
-		setStart_time(start_time);
-		setEnd_time(end_time);
-		setNumber_of_days((int) (end_date.getTime() - start_date.getTime()));
-		setDuration(new Time(end_time.getTime() - start_time.getTime()));
+
 	}
 
-	public Date getStart_date() {
+	public MovieSched(LocalDate sd, LocalDate ed, LocalTime st, LocalTime et) {
+		setStart_date(sd);
+		setEnd_date(ed);
+		setStart_time(st);
+		setEnd_time(et);
+		setNumber_of_days(Period.between(sd, ed).getDays());
+		setDuration(Duration.between(st, et));
+	}
+	
+	public MovieSched(LocalDate sd, int nd, LocalTime st, LocalTime et) {
+		setStart_date(sd);
+		setEnd_date(sd.plusDays(nd));
+		setStart_time(st);
+		setEnd_time(et);
+		setNumber_of_days(Period.between(sd, getEnd_date()).getDays());
+		setDuration(Duration.between(st, et));
+	}
+
+	public LocalDate getStart_date() {
 		return start_date;
 	}
 
-	public void setStart_date(Date start_date) {
+	public void setStart_date(LocalDate start_date) {
 		this.start_date = start_date;
 	}
 
-	public Date getEnd_date() {
+	public LocalDate getEnd_date() {
 		return end_date;
 	}
 
-	public void setEnd_date(Date end_date) {
+	public void setEnd_date(LocalDate end_date) {
 		this.end_date = end_date;
 	}
 
-	public Time getStart_time() {
+	public LocalTime getStart_time() {
 		return start_time;
 	}
 
-	public void setStart_time(Time start_time) {
+	public void setStart_time(LocalTime start_time) {
 		this.start_time = start_time;
 	}
 
-	public Time getEnd_time() {
+	public LocalTime getEnd_time() {
 		return end_time;
 	}
 
-	public void setEnd_time(Time end_time) {
+	public void setEnd_time(LocalTime end_time) {
 		this.end_time = end_time;
 	}
 
@@ -73,11 +79,11 @@ public class MovieSched implements Serializable {
 		this.number_of_days = number_of_days;
 	}
 
-	public Time getDuration() {
+	public Duration getDuration() {
 		return duration;
 	}
 
-	public void setDuration(Time duration) {
+	public void setDuration(Duration duration) {
 		this.duration = duration;
 	}
 

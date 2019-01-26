@@ -1,8 +1,11 @@
 package model;
 
-import java.io.Serializable;
-import java.sql.Time;
-import java.util.Date;
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * 
@@ -10,64 +13,69 @@ import java.util.Date;
  *Description: Class movie with setters and getters.
  *Date Modified: 1-21-2019 8:00 pm
  */
-public class Movie implements Serializable {
-
-	long movie_id;
-	String title;
-	int rating;
-	String genre;
+@XmlAccessorType(XmlAccessType.PROPERTY)
+public class Movie {
+	private long movie_id;
+	private String title;
+	private int rating;
+	private String genre;
+	private MovieSched movie_sched;
 	private int cinema_num;
 	private float price;
-	private MovieSched movie_sched = new MovieSched();
 	
 	public Movie(){
-		movie_id = 0;
-		title = "";
-		rating = 0;
-		genre = "";
-		cinema_num = 0;
-		setPrice(0);
-		setMovie_sched(movie_sched);
+
 	}
 	
 	public Movie(long movie_id, String title, int rating, String genre, int cinemaNum, MovieSched movie_sched){
-		this.movie_id = movie_id;
-		this.title = title;
-		this.rating = rating;
-		this.genre = genre;
-		this.cinema_num = cinemaNum;
-		setMovie_sched(movie_sched);
+		setMovieId(movie_id);
+		setTitle(title);
+		setRating(rating);
+		setGenre(genre);
+		setCinemaNum(cinemaNum);
+		setMovieSched(movie_sched);
+		setPrice(0);
 	}
+
 	
-	public void setMovieID(long movie_id){
-		this.movie_id = movie_id;
-	}
-	public long getMovieID(){
+	public long getMovieId() {
 		return movie_id;
 	}
-	public void setTitle(String title){
-		this.title = title;
+
+	public void setMovieId(long movie_id) {
+		this.movie_id = movie_id;
 	}
-	public String getTitle(){
+
+	public String getTitle() {
 		return title;
 	}
-	public void setRating(int rating){
-		this.rating = rating;
+
+	public void setTitle(String t) {
+		title = t;
 	}
-	public int getRating(){
+
+	public int getRating() {
 		return rating;
 	}
-	public void setGenre(String genre){
-		this.genre = genre;
+
+	public void setRating(int r) {
+		rating = r;
 	}
-	public String getGenre(){
+
+	public String getGenre() {
 		return genre;
 	}
+
+	public void setGenre(String g) {
+		genre = g;
+	}
+
 	public int getCinemaNum() {
 		return cinema_num;
 	}
-	public void setCinemaNum(int cinemaNum) {
-		this.cinema_num = cinemaNum;
+
+	public void setCinemaNum(int cn) {
+		cinema_num = cn;
 	}
 
 	public float getPrice() {
@@ -78,11 +86,11 @@ public class Movie implements Serializable {
 		this.price = price;
 	}
 
-	public MovieSched getMovie_sched() {
+	public MovieSched getMovieSched() {
 		return movie_sched;
 	}
 
-	public void setMovie_sched(MovieSched movie_sched) {
+	public void setMovieSched(MovieSched movie_sched) {
 		this.movie_sched = movie_sched;
 	}
 }

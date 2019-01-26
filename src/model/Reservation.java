@@ -1,9 +1,10 @@
 package model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Reservation {
+public class Reservation implements Serializable {
 	private long reservation_id;
 	private long customer_id;
 	private List<Booking> bookings;
@@ -39,7 +40,7 @@ public class Reservation {
 	}
 	
 	public void displaySeatPlan(long movieId){
-		// looks for all movieID in reservation file, 
+		
 	}
 
 	

@@ -3,26 +3,42 @@ package view;
 import java.io.EOFException;
 import java.io.File;
 import java.io.Serializable;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 import model.Booking;
 import model.Cinema;
+import model.Cinemas;
 import model.Customer;
+import model.Customers;
 import model.Movie;
+import model.MovieSched;
+import model.Movies;
 import model.Reservation;
 import model.Seat;
-import others.ErrorTrap;
-import others.FilesManager;
+import services.ErrorTrapService;
+import services.FileService;
+import services.InputService;
 
 public class Menus {
-	private ErrorTrap error_trap;
-	private FilesManager files_manager;
-	Scanner sc = new Scanner(System.in);
+	private ErrorTrapService error_service;
+	private FileService files_manager;
+	private Scanner sc = new Scanner(System.in);
+	private InputService input_service;
+	private DateTimeFormatter formatter = new DateTimeFormatterBuilder()
+			.appendOptional(DateTimeFormatter.ISO_LOCAL_DATE).optionalStart()
+			.appendLiteral("T").optionalEnd()
+			.appendOptional(DateTimeFormatter.ISO_LOCAL_TIME).toFormatter();
 
 	public Menus() {
-		error_trap = new ErrorTrap();
-		files_manager = new FilesManager();
+		error_service = new ErrorTrapService();
+		files_manager = new FileService();
+		input_service = new InputService();
 	}
 
 	/**
@@ -41,11 +57,11 @@ public class Menus {
 		System.out.println("C.Create Booking");
 		System.out.println("D.Cancel Booking");
 		System.out.println("E.Exit");
-		System.out.printf("[Input]");
+		System.out.printf("[Choice]: ");
 
 		String line = sc.nextLine();
 		while (line.length() < 1) {
-			line = sc.nextLine();
+			line = sc.nextLine().toUpperCase();
 		}
 		choice = line.charAt(0);
 
@@ -54,32 +70,71 @@ public class Menus {
 
 	/**
 	 * Initial Author: Padrigano Last Author: Padrigano Description: Fills out
-	 * the fields of Movie class via input and returns the Movie to controller.
-	 * Date Modified: 1-22-2019 8:00 pm
+	 * the fields of Movie class via input_service and returns the Movie to
+	 * controller. Date Modified: 1-22-2019 8:00 pm
 	 * 
 	 * @param movie
 	 * @return Movie
 	 */
 	public Movie createMovieView(Movie movie) {
-		String title = "", genre = "";
-		int rating = 0;
+		String title = "", genre = "", start_date = "", start_time = "",
+				end_time = "";
+		LocalDate sd, ed;
+		int num_of_days = 0, rating = 0, cinema_num = 0;
+		LocalTime st, et;
+		float price;
+
 		try {
-			System.out.println("Enter title:");
+
+			// Title input_service
+			System.out.print("Enter title: ");
 			title = sc.nextLine();
-			movie.setTitle(title);
-			System.out.println("Enter genre:");
-			genre = sc.nextLine();
-			if (error_trap.isLegitString(genre)) {
-				genre = genre.toLowerCase();
-				if (error_trap.isLegitGenre(genre)) {
-					movie.setGenre(genre);
-				}
-			}
-			System.out.println("Enter rating(out of 5):");
-			rating = sc.nextInt();
-			if (error_trap.isLegitRating(rating)) {
-				movie.setRating(rating);
-			}
+			movie.setTitleOfMovie(title);
+
+			// Rating input_service
+			rating = input_service.inputRating();
+			movie.setRates(rating);
+
+			// Genre input_service
+			genre = input_service.inputGenre();
+			movie.setGnr(genre);
+
+			// Start Date input_service
+			System.out.print("Enter start date: ");
+			start_date = sc.nextLine();
+			sd = LocalDate.parse(start_date, formatter);
+			System.out.println("Difference of: "
+					+ sd.compareTo(java.time.LocalDate.now()));
+			System.out.println(sd);
+
+			// Days the movie is showing
+			System.out.print("Enter number of days to show this movie: ");
+			num_of_days = sc.nextInt();
+			sc.nextLine();
+			ed = sd.plusDays(num_of_days);
+
+			System.out.println(ed);
+			// check if conflict with other dates
+
+			// Start time input_service
+			System.out.print("Enter start time: ");
+			start_time = sc.nextLine();
+			st = LocalTime.parse(start_time, formatter);
+
+			// End time input_service
+			System.out.print("Enter end time: ");
+			end_time = sc.nextLine();
+			et = LocalTime.parse(end_time, formatter);
+			
+			movie.setMovieSched(new MovieSched(sd,ed,st,et));
+
+			// input_service cinema num
+			cinema_num = input_service.inputCinemaNum();
+			movie.setCinNum(cinema_num);
+			
+			System.out.println("Input price: ");
+			price = sc.nextFloat();
+			movie.setPrc(price);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -88,25 +143,29 @@ public class Menus {
 		return movie;// return movie that has details
 	}
 
-	public void displayMovieView(String path) {
-		File f = new File(path);
+	public void displayMovieView(String movie_path) {
+		File f = new File(movie_path);
 
-		if (error_trap.isEmpty(f) == true) {
+		if (error_service.isEmpty(f) == true) {
 			System.out.println("File is Empty!");
 		}
 
 		ArrayList<Movie> movie_list = new ArrayList<Movie>();
-		movie_list = files_manager.readMultipleObjects(path, movie_list);
+		Movies movies = new Movies();
+		movies.setlist(movie_list);
+		movies = (Movies) files_manager.readMultipleObjects(movie_path, movies);
 		for (int i = 0; i < movie_list.size(); i++) {
 			System.out.println(
-					"Movie Title: " + movie_list.get(i).getTitle() + "Movie Rating:" + movie_list.get(i).getRating());
+					"Movie Title: " + movie_list.get(i).getTitleOfMovie()
+							+ "Movie Rating:" + movie_list.get(i).getRates());
 		}
 	}
 
-	public void createBookingView(String movie_path, String customer_path, String cinema_path) {
+	public void createBookingView(String movie_path, String customer_path,
+			String cinema_path, String reservation_path) {
 
 		boolean isEnough = false;
-
+		Cinema chosen_cinema = new Cinema();
 		Reservation reservation = new Reservation();
 
 		ArrayList<Movie> movie_list = new ArrayList<>();
@@ -119,97 +178,215 @@ public class Menus {
 		File customer = new File(customer_path);
 		File cinema = new File(cinema_path);
 
-		if (error_trap.isEmpty(movie) == true) {
+		if (error_service.isEmpty(movie) == true) {
 			System.out.println("File is Empty!");
 		} else {
-			movie_list = files_manager.readMultipleObjects(movie_path, movie_list);
+			Movies movies = new Movies();
+			movies = (Movies) files_manager.readMultipleObjects(movie_path, movies);
 		}
 
-		if (error_trap.isEmpty(customer) == true) {
+		if (error_service.isEmpty(customer) == true) {
 			System.out.println("File is Empty!");
 		} else {
-			customer_list = files_manager.readMultipleObjects(customer_path, customer_list);
+			Customers customers = new Customers();
+			customers = (Customers )files_manager.readMultipleObjects(customer_path, customers);
 		}
 
-		if (error_trap.isEmpty(cinema) == true) {
+		if (error_service.isEmpty(cinema) == true) {
 			System.out.println("File is Empty!");
 		} else {
-			cinema_list = files_manager.readMultipleObjects(cinema_path, cinema_list);
+			Cinemas cinemas = new Cinemas();
+			cinemas = (Cinemas) files_manager.readMultipleObjects(cinema_path, cinema_list);
 		}
 
 		System.out.print("Enter cinema num: ");
 		int cinema_num = sc.nextInt();
 
-		// check if customer is existing
 		System.out.print("Enter customer id: ");
 		long customer_id = sc.nextLong();
 
 		reservation.setCustomer_id(customer_id);
 
 		while (isEnough != true) {
-			System.out.print("Enter movie id:  [0 to exit]");
+			System.out.print("(0 - exit )Enter movie id:");
 			long movie_id = sc.nextLong();
-			
-			if(movie_id == 0){
+
+			if (!error_service.movieIdValid(movie_path, movie_id)) {
+				System.out.println("Movie Invalid");
 				break;
 			}
-			
-			
-			for (Cinema c : cinema_list) {
 
-				System.out.println(c.getCinema_id());
-				if (c.getCinema_id() == cinema_num && c.getMovie_id() == movie_id) {
-					seat_list = c.getSeat_list();
-					displaySeatPlan(c);
+			chosen_cinema = cinema_list.stream()
+					.filter(c -> c.getMovie_id() == movie_id)
+					.collect(Collectors.toList()).get(0);
 
-					System.out.print(
-							"Input desired seats with the format: [A2,A3,A4,B6] seats are separated by the comma: ");
-					String seats = sc.nextLine();
-					seats = sc.nextLine().toUpperCase();
-					String[] seat = seats.split(",");
+			displaySeatPlan(chosen_cinema);
 
-					System.out.println(seat[0]);
+			System.out.print(
+					"input_service desired seats with the format: [A2,A3,A4,B6] seats are separated by the comma: ");
+			String seats = sc.nextLine();
+			seats = sc.nextLine().toUpperCase();
+			String[] seat = seats.split(",");
+			seat_list = chosen_cinema.getSeat_list();
 
-					for (Seat s : seat_list) {
-						int x = 0;
-						int seatNum = (int) seat[x].charAt(1);
-						char row = seat[x].charAt(0);
+			int x = 0, counter = 0;
+			while (counter != seat.length) {
 
-						if (s.getSeatNum() + 49 == seatNum && s.getSeatRow() == row) {
-							String status = s.isReserved() ? "reserved already. " : "available. ";
-							System.out.println("This seat is " + status);
-							if (!s.isReserved()) {
-								r_seat_list.add(s);
-								// pass the actual seat number. Row * 10 + seatNum
-								c.getSeat_list().get(x).setReserved(true);
-								displaySeatPlan(c);
-							}
-							break;
-						}
+				int seat_num = (int) seat[x].charAt(1);
+				char seat_row = seat[x].charAt(0);
 
-						x++;
-					}
+				int realSeatNum = ((seat_row - 65) * 10) + seat_num - 49;
+				if (!seat_list.get(realSeatNum).isReserved()) {
+					seat_list.get(realSeatNum).setReserved(true);
+					r_seat_list.add(seat_list.get(realSeatNum));
+					x++;
+				} else if (seat_list.get(realSeatNum).isReserved()) {
+					System.out.println(
+							"This seat is reserved already.\nContinue");
 
-					reservation.getBookings().add(new Booking(movie_id, r_seat_list));
+				}
 
+				counter++;
+			}
+
+			displaySeatPlan(chosen_cinema);
+			reservation.getBookings().add(new Booking(movie_id, r_seat_list));
+
+			System.out.println("Reserve more? (Y for yes, Any for no)");
+			String choice = sc.nextLine().toUpperCase();
+			if (choice.charAt(0) != 'Y') {
+				isEnough = true;
+			}
+		}
+
+		long temp_id = files_manager.checkCurrentNumOfRecord(reservation_path,
+				reservation);
+		reservation.setReservation_id(temp_id++);
+		if (temp_id == 0) {
+			// files_manager.saveObject(reservation, reservation_path);
+		} else {
+			// files_manager.saveObject(reservation, reservation_path);
+		}
+
+		// files_manager.saveObject(cinema_list, cinema_path);
+
+		System.out.println("This is the toal fee: "
+				+ getTotalReservationFee(reservation, movie_path));
+	}
+
+	public float getTotalReservationFee(Reservation r, String movie_path) {
+
+		String hot_seat = "HotSeat";
+		String reg_seat = "RegularSeat";
+		float total = 0;
+		float moviePrice = 0;
+		float hotPrice = 0;
+
+		File movie = new File(movie_path);
+		ArrayList<Movie> movie_list = new ArrayList<>();
+
+		if (error_service.isEmpty(movie) == true) {
+			System.out.println("File is Empty!");
+		} else {
+			Movies movies = new Movies();
+			movies = (Movies) files_manager.readMultipleObjects(movie_path, movies);
+		}
+
+		for (Booking b : r.getBookings()) {
+
+			moviePrice = movie_list.stream()
+					.filter(m -> m.getMovieId() == b.getMovieId())
+					.collect(Collectors.toList()).get(0).getPrc();
+
+			System.out.println("movie price retrieved: " + moviePrice);
+
+			hotPrice = moviePrice * (float) 1.2;
+
+			for (Seat seat : b.getSeats()) {
+
+				System.out.println(seat.getClass().getSimpleName());
+
+				if (seat.getClass().getSimpleName().equals(hot_seat)) {
+					total += hotPrice;
+				} else if (seat.getClass().getSimpleName().equals(reg_seat)) {
+					total += moviePrice;
 				}
 
 			}
 
 		}
-		
-		
+
+		return total;
 
 	}
 
-	public void cancelBookingView() {// add more as needed
+	public void cancelBookingView() {
+		String reservation_path = "reservation_records.txt";
+		String cancelled_path = "cancelled_reservation_records.txt";
+		String input_service_res_id = "";
+		long reservation_id;
 
+		boolean found = false;
+		char confirmation = ' ';
+		Reservation cancelled_reservation = new Reservation();
+
+		try {
+
+			System.out.println(
+					"Enter Reservation ID of the booking that you want to cancel:");
+			input_service_res_id = sc.nextLine();
+			if (error_service.isValidNumber(input_service_res_id)) {
+				reservation_id = Integer.parseInt(input_service_res_id);
+
+				ArrayList<Reservation> list = new ArrayList<Reservation>();
+				ArrayList<Reservation> temp = new ArrayList<Reservation>();
+
+				//Cedric
+//				list = files_manager.readMultipleObjects(reservation_path,
+//						list);
+				for (int i = 0; i < list.size(); i++) {
+					if (list.get(i).getReservation_id() != reservation_id) {
+						temp.add(list.get(i));
+					} else {
+						found = true;
+						cancelled_reservation = list.get(i);
+					}
+				}
+				if (found) {
+					System.out.println(
+							"Do you really want to delete this reservation? (y/n)");
+					while (sc.hasNextLine()) {
+						confirmation = sc.nextLine().charAt(0);
+						break;
+					}
+
+					// store the cancelled_reservation into the
+					// cancelled_reservation.txt file
+					if (confirmation == 'Y' || confirmation == 'y') {
+						File f = new File("cancelled_reservation.txt");
+						if (error_service.isEmpty(f) == true) {
+							// files_manager.saveObject(cancelled_reservation,
+							// cancelled_path);
+
+						} else {
+							// files_manager.saveObject(cancelled_reservation,
+							// cancelled_path);
+						}
+						System.out.println(
+								"Your reservation has been cancelled.");
+					}
+				}
+			}
+		} catch (Exception e) {
+			System.out.println(e);
+		}
 	}
 
 	// improve to grid grid.x
 	public void displaySeatPlan(Cinema cinema) {
 		int counter = 0;
-		System.out.println("==================== SEAT PLAN ======================");
+		System.out.println(
+				"==================== SEAT PLAN ======================");
 
 		for (char a = 'A'; a <= 'O'; a++) {
 			System.out.print(a + ": ");
@@ -222,7 +399,8 @@ public class Menus {
 			System.out.println();
 		}
 
-		System.out.println("==================== SEAT PLAN ======================");
+		System.out.println(
+				"==================== SEAT PLAN ======================");
 	}
 
 }
