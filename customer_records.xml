@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<customers>
+    <customer>
+        <customerId>1</customerId>
+        <firstName>April Joy</firstName>
+        <lastName>Padrigano</lastName>
+        <middleName>B</middleName>
+    </customer>
+    <customer>
+        <customerId>2</customerId>
+        <firstName>Sabs</firstName>
+        <lastName>Sabs</lastName>
+        <middleName>C</middleName>
+    </customer>
+    <customer>
+        <customerId>6</customerId>
+        <firstName>Noel</firstName>
+        <lastName>Garcia</lastName>
+        <middleName>E</middleName>
+    </customer>
+    <customer>
+        <customerId>3</customerId>
+        <firstName>Kriz</firstName>
+        <lastName>Urmeneta</lastName>
+        <middleName>D</middleName>
+    </customer>
+    <customer>
+        <customerId>4</customerId>
+        <firstName>Ferlie</firstName>
+        <lastName>Penido</lastName>
+        <middleName>Z</middleName>
+    </customer>
+</customers>

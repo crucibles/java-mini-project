@@ -1,4 +1,4 @@
-package others;
+package services;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -15,11 +15,16 @@ import java.io.Serializable;
 import java.io.Writer;
 import java.util.ArrayList;
 
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
+
+import model.Customer;
 import model.Movie;
 
-public class FilesManager {//make this generic
-	
-	public FilesManager(){
+public class FileService {// make this generic
+
+	public FileService() {
 
 	}
 
@@ -29,7 +34,8 @@ public class FilesManager {//make this generic
 	 * 
 	 * @param path
 	 */
-	public static void createFile(String path) {
+	public void createFile(String path) {
+		System.out.println("creating.......");
 		try {
 			File file = new File(path);
 			if (!file.exists()) {
@@ -48,9 +54,9 @@ public class FilesManager {//make this generic
 	 * @param t
 	 * @return
 	 */
-	public <T extends Serializable> int checkCurrentNumOfRecord(String path, T t) {
+	public <T> int checkCurrentNumOfRecord(String path, T t) {
 		FileInputStream fis = null;
-		T obj;
+
 		try {
 			fis = new FileInputStream(path);
 		} catch (FileNotFoundException e1) {
@@ -62,7 +68,7 @@ public class FilesManager {//make this generic
 		try {
 			ObjectInputStream input = new ObjectInputStream(fis);
 			while (cont) {
-				obj = (T) input.readObject();
+				T obj = (T) input.readObject();
 				if (obj != null)
 					count++;
 				else
@@ -82,62 +88,52 @@ public class FilesManager {//make this generic
 	 * @param t
 	 * @param filepath
 	 */
-	public <T extends Serializable> void saveObjectFirstTime(T t, String filepath) {
+	public <T> void saveObject(Object t, String filepath) {
+
 		try {
-			FileOutputStream fileOut = new FileOutputStream(filepath);
-			ObjectOutputStream objectOut = new ObjectOutputStream(fileOut);
-			objectOut.writeObject(t);
-			objectOut.close();
-			System.out.println("The Object  was succesfully written to a file");
 
-		} catch (Exception ex) {
-			ex.printStackTrace();
+			JAXBContext jaxbContext = JAXBContext.newInstance(t.getClass());
+			Marshaller marshaller = jaxbContext.createMarshaller();
+			marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+			marshaller.marshal(t, new File(filepath));
+			marshaller.marshal(t, System.out);
 
-		}
-
-	}
-
-	public <T extends Serializable> void saveObjectSucceedingTime(T t, String filepath) {
-		try {
-			ObjectOutputStream os2 = new ObjectOutputStream(new FileOutputStream(filepath, true)) {
-				protected void writeStreamHeader() throws IOException {
-					reset();
-				}
-			};
-			os2.writeObject(t);
-			os2.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
 	}
 
-	public <T extends Serializable> ArrayList<T> readMultipleObjects(String path, ArrayList<T> t_list){
-		FileInputStream fis = null;
+	// public <T extends Serializable> void saveObjectSucceedingTime(T t,
+	// String filepath) {
+	// try {
+	// ObjectOutputStream os2 = new ObjectOutputStream(
+	// new FileOutputStream(filepath, true)) {
+	// protected void writeStreamHeader() throws IOException {
+	// reset();
+	// }
+	// };
+	// os2.writeObject(t);
+	// os2.close();
+	// } catch (Exception e) {
+	// e.printStackTrace();
+	// }
+	//
+	// }
+
+	public <T> Object readMultipleObjects(String path, Object t_list) {
+
 		try {
-			fis = new FileInputStream(path);
-		} catch (FileNotFoundException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+			File file = new File(path);
+			JAXBContext jaxbContext = JAXBContext
+					.newInstance(t_list.getClass());
+			Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+			t_list = (T) unmarshaller.unmarshal(file);
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-		boolean cont = true;
-		try{
-		   ObjectInputStream input = new ObjectInputStream(fis);
-		   while(cont){
-			  Object obj = input.readObject();
-		      if(obj == null){		    	  
-		    	  cont = false;
-		      }else{		    	  
-		    	  t_list.add((T) obj);
-		      }
-		         
-		   }
-		}catch(Exception e){
-		}
+
 		return t_list;
 	}
 
-	public void removeRecordInFile(Object object, int type) {
-
-	}
 }
