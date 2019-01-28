@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <movies>
     <movie>
-        <cinNum>2</cinNum>
-        <gnr>horror</gnr>
+        <cinemaNum>1</cinemaNum>
+        <genre>horror</genre>
         <movieId>1</movieId>
         <movieSched>
-            <duration/>
-            <end_date/>
-            <end_time/>
-            <number_of_days>2</number_of_days>
-            <start_date/>
-            <start_time/>
+            <duration>PT59M</duration>
+            <endDate>2019-02-17</endDate>
+            <endTime>10:44</endTime>
+            <numberOfDays>5</numberOfDays>
+            <startDate>2019-02-12</startDate>
+            <startTime>09:45</startTime>
         </movieSched>
-        <prc>100.0</prc>
-        <rates>5</rates>
-        <titleOfMovie>Lion</titleOfMovie>
+        <price>100.0</price>
+        <rating>5</rating>
+        <title>lion</title>
     </movie>
 </movies>

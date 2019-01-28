@@ -1,70 +1,65 @@
 package model;
 
-import java.util.ArrayList;
-import java.util.Date;
 
 import services.CinemaService;
 
-public class Cinema {
+public class Cinema<T> {
 	private int cinema_id;
-	private ArrayList<Seat> seat_list;
+	private Seats<T> seat_list = new Seats<T>();
 	private long movie_id;
-	private ArrayList<Reservation> reservations;
+	private Reservations reservation_list = new Reservations();
 	private CinemaService cs;
-	private Date cinema_date;
+	private String cinema_date;
 
 	public Cinema(){
-		reservations = new ArrayList<>();
-		seat_list = new ArrayList<>();
 		cs = new CinemaService();
 	}
 	
-	public Cinema(int cinema_id, long movie_id) {
-		reservations = new ArrayList<>();
-		seat_list = new ArrayList<>();
-		setCinema_id(cinema_id);
-		setMovie_id(movie_id);
+	public Cinema(int cinema_id, long movie_id,String cinema_date) {
+		setCinemaId(cinema_id);
+		setMovieId(movie_id);
+		setCinemaDate(cinema_date);
 		cs = new CinemaService();
 		cs.initializeSeatList(this);
 	}
 
-	public long getMovie_id() {
+	public long getMovieId() {
 		return movie_id;
 	}
 
 
-	public void setMovie_id(long movie_id) {
+	public void setMovieId(long movie_id) {
 		this.movie_id = movie_id;
 	}
 
 
-	public int getCinema_id() {
+	public int getCinemaId() {
 		return cinema_id;
 	}
 
 
-	public void setCinema_id(int cinema_id) {
+	public void setCinemaId(int cinema_id) {
 		this.cinema_id = cinema_id;
 	}
 
 
-	public ArrayList<Seat> getSeat_list() {
+	public Seats<?> getSeatList() {
 		return seat_list;
 	}
 
 
-	public void setSeat_list(ArrayList<Seat> seat_list) {
-		this.seat_list = seat_list;
+	public void setSeatList(Seats<?> seats) {
+		seat_list = (Seats<T>) seats;
 	}
 
 
-	public ArrayList<Reservation> getReservations() {
-		return reservations;
+	public Reservations getReservations() {
+		return reservation_list;
 	}
 
 
-	public void setReservations(ArrayList<Reservation> reservations) {
-		this.reservations = reservations;
+	public void setReservations(Reservations reservations) {
+		reservation_list = reservations;
 	}
 
 	public CinemaService getCs() {
@@ -75,11 +70,11 @@ public class Cinema {
 		this.cs = cs;
 	}
 
-	public Date getCinema_date() {
+	public String getCinemaDate() {
 		return cinema_date;
 	}
 
-	public void setCinema_date(Date cinema_date) {
+	public void setCinemaDate(String cinema_date) {
 		this.cinema_date = cinema_date;
 	}
 

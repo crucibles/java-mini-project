@@ -23,6 +23,7 @@ public class MainController {
 	private static String reservation_path = "reservation_records.xml";
 	private static PopulateFiles populateFiles;
 	final static char create_movie = 'A';
+	final static char create_booking = 'C';
 
 	/**
 	 * Initial Author: Padrigano Last Author: Padrigano Description: Controls
@@ -47,13 +48,15 @@ public class MainController {
 					break;
 				}
 
-				case 'b' : {
+				case 'B' : {
 					menu.displayMovieView(movie_path);
+					break;
 				}
 
-				case 'c' : {
+				case create_booking : {
 					menu.createBookingView(movie_path, customer_path,
 							cinema_path, reservation_path);
+					break;
 				}
 
 				case 'd' : {
@@ -78,8 +81,6 @@ public class MainController {
 		int latest_id;
 		Movie temp_movie = new Movie();
 		Cinema temp_cinema = new Cinema();
-		ArrayList<Movie> m_list = new ArrayList<>();
-		ArrayList<Cinema> c_list = new ArrayList<>();
 		Movies movies = new Movies();
 		Cinemas cinemas = new Cinemas();
 		ErrorTrapService ec = new ErrorTrapService();
@@ -88,11 +89,14 @@ public class MainController {
 			System.out.println("hello");
 			movies = (Movies) files_manager.readMultipleObjects(movie_path, movies);
 			cinemas = (Cinemas) files_manager.readMultipleObjects(cinema_path, cinemas);
+			System.out.println("adsasd" + cinemas);
 		}
 			
 		
 		temp_movie = menu.createMovieView(temp_movie);
+		System.out.println("IM HERE =-===============");
 		latest_id = files_manager.checkCurrentNumOfRecord(movie_path, temp_movie);
+		System.out.println("IM HERE =-===============");
 		System.out.println(latest_id);
 
 		if (latest_id == 0) {
@@ -102,19 +106,23 @@ public class MainController {
 			movies.add(temp_movie);
 			files_manager.saveObject(movies, movie_path);
 			
-			temp_cinema = new Cinema(temp_movie.getCinemaNum(), temp_movie.getMovieId());
-			cinemas.add(temp_cinema);
-			files_manager.saveObject(c_list, cinema_path);
+			System.out.println("KILOOOOO");
+			// make all cinemas for that movie
+			cinemas.setlist(temp_cinema.getCs().makeCinemasForMovie(temp_movie));
+			System.out.println("KILOOOOO");
+			
+			System.out.println();
+			files_manager.saveObject(cinemas, cinema_path);
 
 		} else {
 
 			temp_movie.setMovieId(latest_id++);
 			movies.add(temp_movie);
-			files_manager.saveObject(m_list, movie_path);
+			files_manager.saveObject(movies, movie_path);
 			
-			temp_cinema = new Cinema(temp_movie.getCinemaNum(), temp_movie.getMovieId());
-			cinemas.add(temp_cinema);
-			files_manager.saveObject(c_list, cinema_path);
+			// make all cinemas for that movie
+			cinemas.setlist(temp_cinema.getCs().makeCinemasForMovie(temp_movie));
+			files_manager.saveObject(cinemas, cinema_path);
 		}
 
 	} // create movie bracket

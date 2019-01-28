@@ -1,15 +1,12 @@
 package model;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
-public class Booking implements Serializable {
+public class Booking  {
 	
 	private long movie_id;
-	private List<Seat> seats = new ArrayList<>();
+	private Seats<?> seats;
 
-	public Booking(long movieId, List<Seat> seats) {
+	public Booking(long movieId, Seats<?> seats) {
 		setMovieId(movieId);
 		setSeats(seats);
 	}
@@ -22,11 +19,11 @@ public class Booking implements Serializable {
 		this.movie_id = movie_id;
 	}
 
-	public List<Seat> getSeats() {
+	public Seats<?> getSeats() {
 		return seats;
 	}
 
-	public void setSeats(List<Seat> seats) {
+	public void setSeats(Seats<?> seats) {
 		this.seats = seats;
 	}
 

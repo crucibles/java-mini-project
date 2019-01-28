@@ -1,11 +1,6 @@
 package model;
 
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * 
@@ -13,7 +8,6 @@ import javax.xml.bind.annotation.XmlRootElement;
  *Description: Class movie with setters and getters.
  *Date Modified: 1-21-2019 8:00 pm
  */
-@XmlAccessorType(XmlAccessType.PROPERTY)
 public class Movie {
 	private long movie_id;
 	private String title;

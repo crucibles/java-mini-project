@@ -1,10 +1,9 @@
 package model;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Reservation implements Serializable {
+public class Reservation {
 	private long reservation_id;
 	private long customer_id;
 	private List<Booking> bookings;

@@ -1,12 +1,17 @@
 package model;
 
-import java.io.Serializable;
+import javax.xml.bind.annotation.XmlRootElement;
 
-public abstract class Seat implements Serializable {
+@XmlRootElement(name = "seats")
+public class Seat {
 
-	private char seatRow = 'A';
-	private int seatNum = 0;
-	private boolean isReserved= false;
+	private char seatRow;
+	private int seatNum;
+	private boolean isReserved;
+	
+	public Seat(){
+		
+	}
 	
 	public Seat(char seatRow, int seatNum, boolean reserved){
 		setSeatRow(seatRow);

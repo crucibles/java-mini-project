@@ -9,6 +9,9 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class Customers {
 	List<Customer> list;
 
+	public Customers(){
+		
+	}
 
 	public List<Customer> getlist() {
 		return list;

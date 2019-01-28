@@ -7,84 +7,75 @@ import java.time.Period;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
+
 @XmlRootElement(name = "schedule")
 public class MovieSched {
-
-	private LocalDate start_date;
-	private LocalDate end_date;
-	private LocalTime start_time;
-	private LocalTime end_time;
+	private String start_date;
+	private String end_date;
+	private String start_time;
+	private String end_time;
 	private int number_of_days;
-	private Duration duration;
+	private String duration;
 
 	public MovieSched() {
 
 	}
-
-	public MovieSched(LocalDate sd, LocalDate ed, LocalTime st, LocalTime et) {
-		setStart_date(sd);
-		setEnd_date(ed);
-		setStart_time(st);
-		setEnd_time(et);
-		setNumber_of_days(Period.between(sd, ed).getDays());
-		setDuration(Duration.between(st, et));
-	}
 	
 	public MovieSched(LocalDate sd, int nd, LocalTime st, LocalTime et) {
-		setStart_date(sd);
-		setEnd_date(sd.plusDays(nd));
-		setStart_time(st);
-		setEnd_time(et);
-		setNumber_of_days(Period.between(sd, getEnd_date()).getDays());
-		setDuration(Duration.between(st, et));
+		setStartDate(sd.toString());
+		setEndDate(sd.plusDays(nd).toString());
+		setStartTime(st.toString());
+		setEndTime(et.toString());
+		setNumberOfDays(nd);
+		setDuration(Duration.between(st, et).toString());
 	}
 
-	public LocalDate getStart_date() {
-		return start_date;
+	public String getStartDate() {
+		return start_date.toString();
+	}
+	
+	public void setStartDate(String string) {
+		start_date = string;
 	}
 
-	public void setStart_date(LocalDate start_date) {
-		this.start_date = start_date;
-	}
-
-	public LocalDate getEnd_date() {
+	public String getEndDate() {
 		return end_date;
 	}
 
-	public void setEnd_date(LocalDate end_date) {
-		this.end_date = end_date;
+	public void setEndDate(String ed) {
+		end_date = ed;
 	}
 
-	public LocalTime getStart_time() {
+	public String getStartTime() {
 		return start_time;
 	}
 
-	public void setStart_time(LocalTime start_time) {
-		this.start_time = start_time;
+	public void setStartTime(String st) {
+		start_time = st;
 	}
 
-	public LocalTime getEnd_time() {
+	public String getEndTime() {
 		return end_time;
 	}
 
-	public void setEnd_time(LocalTime end_time) {
-		this.end_time = end_time;
+	public void setEndTime(String et) {
+		end_time = et;
 	}
 
-	public int getNumber_of_days() {
+	public int getNumberOfDays() {
 		return number_of_days;
 	}
 
-	public void setNumber_of_days(int number_of_days) {
-		this.number_of_days = number_of_days;
+	public void setNumberOfDays(int nod) {
+		number_of_days = nod;
 	}
 
-	public Duration getDuration() {
+	public String getDuration() {
 		return duration;
 	}
 
-	public void setDuration(Duration duration) {
-		this.duration = duration;
+	public void setDuration(String d) {
+		duration = d;
 	}
 
 }

@@ -88,7 +88,7 @@ public class FileService {// make this generic
 	 * @param t
 	 * @param filepath
 	 */
-	public <T> void saveObject(Object t, String filepath) {
+	public <T> void saveObject(T t, String filepath) {
 
 		try {
 
@@ -125,8 +125,7 @@ public class FileService {// make this generic
 
 		try {
 			File file = new File(path);
-			JAXBContext jaxbContext = JAXBContext
-					.newInstance(t_list.getClass());
+			JAXBContext jaxbContext = JAXBContext.newInstance(t_list.getClass());
 			Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
 			t_list = (T) unmarshaller.unmarshal(file);
 		} catch (Exception e) {

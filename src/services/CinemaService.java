@@ -1,9 +1,13 @@
 package services;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import model.Cinema;
 import model.HotSeat;
+import model.Movie;
 import model.RegularSeat;
 import model.Seat;
 
@@ -22,9 +26,9 @@ public class CinemaService {
 			for (int seat_num = min_seat_num; seat_num <= max_seat_num; seat_num++) {
 
 				if (isHotRow(row)) {
-					c.getSeat_list().add(new HotSeat(row, seat_num, false));
+					c.getSeatList().add(new HotSeat(row, seat_num, false));
 				} else if (isRegularRow(row)) {
-					c.getSeat_list().add(new RegularSeat(row, seat_num, false));
+					c.getSeatList().add(new RegularSeat(row, seat_num, false));
 				}
 
 			}
@@ -53,7 +57,7 @@ public class CinemaService {
 
 	public boolean isSeatAvailable(Cinema c, char row, int num) {
 
-		if (getSeatByRowAndNum(c, row, num).isReserved()) {
+		if (((Seat) getSeatByRowAndNum(c, row, num)).isReserved()) {
 			return false;
 		}
 
@@ -61,10 +65,24 @@ public class CinemaService {
 	}
 
 	public Seat getSeatByRowAndNum(Cinema c, char row, int num) {
-		
-		return c.getSeat_list().stream().filter(seat -> seat.getSeatRow() == row && seat.getSeatNum() == num)
-				.collect(Collectors.toList()).get(0);
 
+		int realSeatNum = ((row - 65) * 10) + num - 49;
+
+		return (Seat) c.getSeatList().getlist().get(realSeatNum);
+	}
+
+	public List<Cinema> makeCinemasForMovie(Movie movie) {
+		
+		List<Cinema> cinemas = new ArrayList<>();
+		int end = movie.getMovieSched().getNumberOfDays();
+		LocalDate date = LocalDate.parse(movie.getMovieSched().getStartDate());
+		
+		for (int start = 1; start <= end; start++) {
+			cinemas.add(new Cinema(movie.getCinemaNum(), movie.getMovieId(), date.toString()));
+			date = date.plusDays(1);
+		}
+
+		return cinemas;
 	}
 
 } // end bracket

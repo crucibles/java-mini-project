@@ -1,13 +1,12 @@
 package view;
 
-import java.io.EOFException;
 import java.io.File;
-import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 import java.util.stream.Collectors;
 
@@ -21,6 +20,7 @@ import model.MovieSched;
 import model.Movies;
 import model.Reservation;
 import model.Seat;
+import model.Seats;
 import services.ErrorTrapService;
 import services.FileService;
 import services.InputService;
@@ -89,15 +89,15 @@ public class Menus {
 			// Title input_service
 			System.out.print("Enter title: ");
 			title = sc.nextLine();
-			movie.setTitleOfMovie(title);
+			movie.setTitle(title);
 
 			// Rating input_service
 			rating = input_service.inputRating();
-			movie.setRates(rating);
+			movie.setRating(rating);
 
 			// Genre input_service
 			genre = input_service.inputGenre();
-			movie.setGnr(genre);
+			movie.setGenre(genre);
 
 			// Start Date input_service
 			System.out.print("Enter start date: ");
@@ -125,16 +125,16 @@ public class Menus {
 			System.out.print("Enter end time: ");
 			end_time = sc.nextLine();
 			et = LocalTime.parse(end_time, formatter);
-			
-			movie.setMovieSched(new MovieSched(sd,ed,st,et));
+
+			movie.setMovieSched(new MovieSched(sd, num_of_days, st, et));
 
 			// input_service cinema num
 			cinema_num = input_service.inputCinemaNum();
-			movie.setCinNum(cinema_num);
-			
-			System.out.println("Input price: ");
+			movie.setCinemaNum(cinema_num);
+
+			System.out.print("Input price: ");
 			price = sc.nextFloat();
-			movie.setPrc(price);
+			movie.setPrice(price);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -150,14 +150,12 @@ public class Menus {
 			System.out.println("File is Empty!");
 		}
 
-		ArrayList<Movie> movie_list = new ArrayList<Movie>();
 		Movies movies = new Movies();
-		movies.setlist(movie_list);
 		movies = (Movies) files_manager.readMultipleObjects(movie_path, movies);
-		for (int i = 0; i < movie_list.size(); i++) {
-			System.out.println(
-					"Movie Title: " + movie_list.get(i).getTitleOfMovie()
-							+ "Movie Rating:" + movie_list.get(i).getRates());
+		for (int i = 0; i < movies.getlist().size(); i++) {
+			System.out.println("Movie Title: "
+					+ movies.getlist().get(i).getTitle() + "Movie Rating:"
+					+ movies.getlist().get(i).getRating());
 		}
 	}
 
@@ -171,8 +169,8 @@ public class Menus {
 		ArrayList<Movie> movie_list = new ArrayList<>();
 		ArrayList<Cinema> cinema_list = new ArrayList<>();
 		ArrayList<Customer> customer_list = new ArrayList<>();
-		ArrayList<Seat> seat_list = new ArrayList<>();
-		ArrayList<Seat> r_seat_list = new ArrayList<>();
+		Seats seat_list = new Seats();
+		Seats r_seat_list = new Seats();
 
 		File movie = new File(movie_path);
 		File customer = new File(customer_path);
@@ -182,21 +180,24 @@ public class Menus {
 			System.out.println("File is Empty!");
 		} else {
 			Movies movies = new Movies();
-			movies = (Movies) files_manager.readMultipleObjects(movie_path, movies);
+			movies = (Movies) files_manager.readMultipleObjects(movie_path,
+					movies);
 		}
 
 		if (error_service.isEmpty(customer) == true) {
 			System.out.println("File is Empty!");
 		} else {
 			Customers customers = new Customers();
-			customers = (Customers )files_manager.readMultipleObjects(customer_path, customers);
+			customers = (Customers) files_manager
+					.readMultipleObjects(customer_path, customers);
 		}
 
 		if (error_service.isEmpty(cinema) == true) {
 			System.out.println("File is Empty!");
 		} else {
 			Cinemas cinemas = new Cinemas();
-			cinemas = (Cinemas) files_manager.readMultipleObjects(cinema_path, cinema_list);
+			cinemas = (Cinemas) files_manager.readMultipleObjects(cinema_path,
+					cinema_list);
 		}
 
 		System.out.print("Enter cinema num: ");
@@ -217,7 +218,7 @@ public class Menus {
 			}
 
 			chosen_cinema = cinema_list.stream()
-					.filter(c -> c.getMovie_id() == movie_id)
+					.filter(c -> c.getMovieId() == movie_id)
 					.collect(Collectors.toList()).get(0);
 
 			displaySeatPlan(chosen_cinema);
@@ -227,7 +228,7 @@ public class Menus {
 			String seats = sc.nextLine();
 			seats = sc.nextLine().toUpperCase();
 			String[] seat = seats.split(",");
-			seat_list = chosen_cinema.getSeat_list();
+			seat_list = (Seats) chosen_cinema.getSeatList().getlist();
 
 			int x = 0, counter = 0;
 			while (counter != seat.length) {
@@ -236,11 +237,12 @@ public class Menus {
 				char seat_row = seat[x].charAt(0);
 
 				int realSeatNum = ((seat_row - 65) * 10) + seat_num - 49;
-				if (!seat_list.get(realSeatNum).isReserved()) {
-					seat_list.get(realSeatNum).setReserved(true);
-					r_seat_list.add(seat_list.get(realSeatNum));
+				Seat current_seat = (Seat) seat_list.getlist().get(realSeatNum);
+				if (!current_seat.isReserved()) {
+					current_seat.setReserved(true);
+					r_seat_list.add(seat_list.getlist().get(realSeatNum));
 					x++;
-				} else if (seat_list.get(realSeatNum).isReserved()) {
+				} else if (current_seat.isReserved()) {
 					System.out.println(
 							"This seat is reserved already.\nContinue");
 
@@ -289,20 +291,23 @@ public class Menus {
 			System.out.println("File is Empty!");
 		} else {
 			Movies movies = new Movies();
-			movies = (Movies) files_manager.readMultipleObjects(movie_path, movies);
+			movies = (Movies) files_manager.readMultipleObjects(movie_path,
+					movies);
 		}
 
 		for (Booking b : r.getBookings()) {
 
 			moviePrice = movie_list.stream()
 					.filter(m -> m.getMovieId() == b.getMovieId())
-					.collect(Collectors.toList()).get(0).getPrc();
+					.collect(Collectors.toList()).get(0).getPrice();
 
 			System.out.println("movie price retrieved: " + moviePrice);
 
 			hotPrice = moviePrice * (float) 1.2;
 
-			for (Seat seat : b.getSeats()) {
+			List<Seat> seats = (List<Seat>) b.getSeats().getlist();
+
+			for (Seat seat : seats) {
 
 				System.out.println(seat.getClass().getSimpleName());
 
@@ -341,9 +346,9 @@ public class Menus {
 				ArrayList<Reservation> list = new ArrayList<Reservation>();
 				ArrayList<Reservation> temp = new ArrayList<Reservation>();
 
-				//Cedric
-//				list = files_manager.readMultipleObjects(reservation_path,
-//						list);
+				// Cedric
+				// list = files_manager.readMultipleObjects(reservation_path,
+				// list);
 				for (int i = 0; i < list.size(); i++) {
 					if (list.get(i).getReservation_id() != reservation_id) {
 						temp.add(list.get(i));
@@ -391,8 +396,9 @@ public class Menus {
 		for (char a = 'A'; a <= 'O'; a++) {
 			System.out.print(a + ": ");
 			for (int b = 1; b <= 10; b++) {
-
-				int s = cinema.getSeat_list().get(counter).isReserved() ? 1 : 0;
+				
+				Seat current_seat = (Seat) cinema.getSeatList().getlist().get(counter); 
+				int s = current_seat.isReserved() ? 1 : 0;
 				System.out.print(" [" + s + "] ");
 				counter++;
 			}
