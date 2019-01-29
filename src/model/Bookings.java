@@ -6,26 +6,26 @@ import java.util.List;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
-@XmlRootElement(name = "movies")
-public class Movies {
-	List<Movie> list;
+@XmlRootElement(name = "bookings")
+public class Bookings {
+	List<Booking> list;
 
-	public Movies(){
+	public Bookings(){
 		
 	}
 	
-	public List<Movie> getlist() {
+	public List<Booking> getlist() {
 		return list;
 	}
 
-	@XmlElement(name = "movie")
-	public void setlist(List<Movie> objects) {
+	@XmlElement(name = "booking")
+	public void setlist(List<Booking> objects) {
 		this.list = objects;
 	}
 
-	public void add(Movie t) {
+	public void add(Booking t) {
 		if (this.list == null) {
-			this.list = new ArrayList<Movie>();
+			this.list = new ArrayList<Booking>();
 		}
 		this.list.add(t);
 	}

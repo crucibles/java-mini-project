@@ -3,9 +3,9 @@ package model;
 
 import services.CinemaService;
 
-public class Cinema<T> {
+public class Cinema {
 	private int cinema_id;
-	private Seats<T> seat_list = new Seats<T>();
+	private Seats seat_list = new Seats();
 	private long movie_id;
 	private Reservations reservation_list = new Reservations();
 	private CinemaService cs;
@@ -43,13 +43,13 @@ public class Cinema<T> {
 	}
 
 
-	public Seats<?> getSeatList() {
+	public Seats getSeatList() {
 		return seat_list;
 	}
 
 
-	public void setSeatList(Seats<?> seats) {
-		seat_list = (Seats<T>) seats;
+	public void setSeatList(Seats seats) {
+		seat_list = seats;
 	}
 
 
@@ -77,6 +77,8 @@ public class Cinema<T> {
 	public void setCinemaDate(String cinema_date) {
 		this.cinema_date = cinema_date;
 	}
+
+
 
 
 }

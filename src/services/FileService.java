@@ -1,31 +1,39 @@
 package services;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
-import java.io.Writer;
-import java.util.ArrayList;
-
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
 import model.Customer;
-import model.Movie;
+import model.Customers;
+
 
 public class FileService {// make this generic
 
 	public FileService() {
 
+	}
+	
+	public void populateCustomers(){
+		Customers c_list = new Customers();
+		Customer customer;
+		String customer_path = "customer_records.xml";
+		customer = new Customer(1, "April Joy","B", "Padrigano");
+		c_list.add(customer);
+		customer = new Customer(2, "Sabs","C", "Sabs");
+		c_list.add(customer);
+		customer = new Customer(6, "Noel","E", "Garcia");
+		c_list.add(customer);
+		customer = new Customer(3, "Kriz","D", "Urmeneta");
+		c_list.add(customer);
+		customer = new Customer(4, "Ferlie","Z", "Penido");
+		c_list.add(customer);
+		saveObject(c_list, customer_path);
 	}
 
 	/**
@@ -121,7 +129,7 @@ public class FileService {// make this generic
 	//
 	// }
 
-	public <T> Object readMultipleObjects(String path, Object t_list) {
+	public <T> T readMultipleObjects(String path, T t_list) {
 
 		try {
 			File file = new File(path);

@@ -3,7 +3,6 @@ package model;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.time.Period;
 
 import javax.xml.bind.annotation.XmlRootElement;
 

@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import model.Cinema;
 import model.HotSeat;
 import model.Movie;
+import model.Movies;
 import model.RegularSeat;
 import model.Seat;
 
@@ -83,6 +84,17 @@ public class CinemaService {
 		}
 
 		return cinemas;
+	}
+	
+	public int getCinemaNum(long movie_id){
+		
+		String movie_path = "movie_records.xml";
+		Movies movies = new Movies();
+		FileService fs = new FileService();
+		
+		movies =  fs.readMultipleObjects(movie_path, movies);
+	
+		return movies.getlist().stream().filter(m -> m.getMovieId() == movie_id).collect(Collectors.toList()).get(0).getCinemaNum();
 	}
 
 } // end bracket

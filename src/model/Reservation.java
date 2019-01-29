@@ -1,20 +1,18 @@
 package model;
 
-import java.util.ArrayList;
-import java.util.List;
 
 public class Reservation {
 	private long reservation_id;
 	private long customer_id;
-	private List<Booking> bookings;
+	private Bookings bookings;
 	
 	public Reservation(){
-		bookings = new ArrayList<Booking>();
+		bookings = new Bookings();
 	}
 	
 	public Reservation(long customerId){
 		setCustomer_id(customerId);
-		setBookings(bookings);
+		bookings = new Bookings();
 	}
 	
 	public long getReservation_id() {
@@ -30,11 +28,11 @@ public class Reservation {
 		this.customer_id = customer_id;
 	}
 
-	public List<Booking> getBookings() {
+	public Bookings getBookings() {
 		return bookings;
 	}
 
-	public void setBookings(List<Booking> reservations) {
+	public void setBookings(Bookings reservations) {
 		this.bookings = reservations;
 	}
 	

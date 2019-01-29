@@ -7,26 +7,26 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "seats")
-public class Seats<T> {
-	List<T> list;
+public class Seats {
+	List<Seat> list;
 
-	public Seats(){
-		
+	public Seats() {
+
 	}
-	
-	public List<T> getlist() {
+
+	public List<Seat> getlist() {
 		return list;
 	}
 
 	@XmlElement(name = "seat")
-	public void setlist(List<T> objects) {
+	public void setlist(List<Seat> objects) {
 		this.list = objects;
 	}
 
-	public void add(Object object) {
+	public void add(Seat object) {
 		if (this.list == null) {
-			this.list = new ArrayList<T>();
+			this.list = new ArrayList<Seat>();
 		}
-		this.list.add((T) object);
+		this.list.add(object);
 	}
 }

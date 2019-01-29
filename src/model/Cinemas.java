@@ -7,8 +7,8 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSeeAlso;
 
-@XmlRootElement(name = "cinemas")
-@XmlSeeAlso({Seat.class})
+@XmlRootElement(namespace="http://www.w3.org/2001/XMLSchema-instance", name = "cinemas")
+@XmlSeeAlso(Seat.class)
 public class Cinemas {
 	List<Cinema> list;
 
