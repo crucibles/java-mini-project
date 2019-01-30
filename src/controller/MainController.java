@@ -33,6 +33,7 @@ public class MainController {
 		initializeFileManager();
 		files_manager = new FileService();
 		files_manager.populateCustomers();
+		initializeFileManager();
 		menu = new Menus();
 
 		do {
@@ -74,7 +75,7 @@ public class MainController {
 	}
 
 	private static void createMovie() {
-		int latest_id;
+		int latest_id = 0;
 		Movie temp_movie = new Movie();
 		Cinema temp_cinema = new Cinema();
 		Movies movies = new Movies();
@@ -87,11 +88,11 @@ public class MainController {
 					movies);
 			cinemas = (Cinemas) files_manager.readMultipleObjects(cinema_path,
 					cinemas);
+			latest_id = movies.getlist().size();
 			System.out.println("adsasd" + cinemas);
 		}
 
 		temp_movie = menu.createMovieView(temp_movie);
-		latest_id = files_manager.checkCurrentNumOfRecord(movie_path, temp_movie);
 		System.out.println(latest_id);
 
 		if (latest_id == 0) {
@@ -103,22 +104,21 @@ public class MainController {
 
 			System.out.println("KILOOOOO");
 			// make all cinemas for that movie
-			cinemas.setlist(
-					temp_cinema.getCs().makeCinemasForMovie(temp_movie));
+			cinemas.setlist(temp_cinema.getCs().makeCinemasForMovie(temp_movie));
 			System.out.println("KILOOOOO");
 
 			System.out.println();
 			files_manager.saveObject(cinemas, cinema_path);
 
 		} else {
-
-			temp_movie.setMovieId(latest_id++);
+			
+			latest_id++;
+			temp_movie.setMovieId(latest_id);
 			movies.add(temp_movie);
 			files_manager.saveObject(movies, movie_path);
 
 			// make all cinemas for that movie
-			cinemas.setlist(
-					temp_cinema.getCs().makeCinemasForMovie(temp_movie));
+			cinemas.getlist().addAll(temp_cinema.getCs().makeCinemasForMovie(temp_movie));
 			files_manager.saveObject(cinemas, cinema_path);
 		}
 

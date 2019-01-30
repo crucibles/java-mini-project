@@ -104,7 +104,6 @@ public class FileService {// make this generic
 			Marshaller marshaller = jaxbContext.createMarshaller();
 			marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
 			marshaller.marshal(t, new File(filepath));
-			marshaller.marshal(t, System.out);
 
 		} catch (Exception e) {
 			e.printStackTrace();

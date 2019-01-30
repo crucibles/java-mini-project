@@ -12,6 +12,7 @@ public class ErrorTrapService {
 	final static int max_cinema_num = 4;
 	final static int min_rating = 0;
 	final static int max_rating = 5;
+	final static int min_movie_id = 1;
 
 	public ErrorTrapService() {
 		files_manager = new FileService();
@@ -26,7 +27,7 @@ public class ErrorTrapService {
 	 * @return boolean
 	 */
 	public boolean isValidString(String str) {
-		boolean result = str.matches("^[a-zA-Z0-9]+$");
+		boolean result = str.matches("[a-zA-Z0-9 ]*");
 		return result;
 	}
 
@@ -41,6 +42,7 @@ public class ErrorTrapService {
 	public boolean isValidNumber(String str) {
 		return str.matches("^\\d+$");
 	}
+	
 
 	/**
 	 * Initial Author: Padrigano Last Author: Padrigano Description: Checks if
@@ -135,8 +137,18 @@ public class ErrorTrapService {
 		}
 
 	}
+	
+	public boolean isValidMovieId(long cn) {
 
-	public boolean movieIdValid(String movie_path, long movie_id) {
+		if (!(cn < min_movie_id)) {
+			return true;
+		} else {
+			return false;
+		}
+
+	}
+
+	public boolean isMovieExist(String movie_path, long movie_id) {
 
 		File f = new File(movie_path);
 

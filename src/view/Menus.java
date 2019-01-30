@@ -3,15 +3,12 @@ package view;
 import java.io.File;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeFormatterBuilder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Scanner;
 import java.util.stream.Collectors;
-
 import model.Booking;
 import model.Cinema;
 import model.Cinemas;
@@ -35,10 +32,6 @@ public class Menus {
 	private Scanner sc = new Scanner(System.in);
 	private InputService input_service;
 	private CinemaService cinema_service;
-	private DateTimeFormatter formatter = new DateTimeFormatterBuilder()
-			.appendOptional(DateTimeFormatter.ISO_LOCAL_DATE).optionalStart()
-			.appendLiteral("T").optionalEnd()
-			.appendOptional(DateTimeFormatter.ISO_LOCAL_TIME).toFormatter();
 
 	public Menus() {
 		error_service = new ErrorTrapService();
@@ -92,8 +85,7 @@ public class Menus {
 	 * @return Movie
 	 */
 	public Movie createMovieView(Movie movie) {
-		String title = "", genre = "", start_date = "", start_time = "",
-				end_time = "";
+		String start_date = "", start_time = "", end_time = "";
 		LocalDate sd, ed;
 		int num_of_days = 0;
 		TimeService ts = new TimeService();
@@ -104,34 +96,23 @@ public class Menus {
 			movie.setTitle(input_service.setFilteredTitle());
 			movie.setRating(input_service.setFilteredRating());
 			movie.setGenre(input_service.setFilteredGenre());
-			start_date = input_service.setFilteredDate("Input Start Date");
-			sd = LocalDate.parse(start_date);
-			num_of_days = input_service.inputNumberOfDays();
-			ed = sd.plusDays(num_of_days);
+			movie.setCinemaNum(input_service.inputCinemaNum());
 			
-			// date available
-//			ts.isDateAvailable(start_date, end_date);
-			
+			System.out.println("Input an accepted date.");
+			do {
+				start_date = input_service.setFilteredDate("Input Start Date");
+				sd = LocalDate.parse(start_date);
+				num_of_days = input_service.inputNumberOfDays();
+				ed = sd.plusDays(num_of_days);
+			} while (!ts.isDateAvailable(start_date, ed.toString(),
+					movie.getCinemaNum()));
 
-			// Start time input_service
-//			System.out.print("Enter start time: ");
-//			start_time = sc.nextLine();
-//			st = LocalTime.parse(start_time, formatter);
-//
-//			// End time input_service
-//			System.out.print("Enter end time: ");
-//			end_time = sc.nextLine();
-//			et = LocalTime.parse(end_time, formatter);
-//
-//			movie.setMovieSched(new MovieSched(sd, num_of_days, st, et));
-//
-//			// input_service cinema num
-//			cinema_num = input_service.inputCinemaNum();
-//			movie.setCinemaNum(cinema_num);
-//
-//			System.out.print("Input price: ");
-//			price = sc.nextFloat();
-//			movie.setPrice(price);
+			start_time = input_service.setFilteredTime(1);
+			end_time = input_service.setFilteredTime(0);
+
+			movie.setMovieSched(new MovieSched(sd, num_of_days,
+					LocalTime.parse(start_time), LocalTime.parse(end_time)));
+			movie.setPrice(input_service.inputPrice());
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -145,42 +126,31 @@ public class Menus {
 
 		if (error_service.isEmpty(f) == true) {
 			System.out.println("File is Empty!");
+			return;
 		}
-
+		
 		Movies movies = new Movies();
 		movies = (Movies) files_manager.readMultipleObjects(movie_path, movies);
-		// GINEL AND CLARENCE
-		Collections.sort(movies.getlist(), new Comparator<Movie>() {
+		//GINEL AND CLARENCE
+		Collections.sort(movies.getlist(), new Comparator<Movie>(){
 			@Override
 			public int compare(Movie a, Movie b) {
-				return a.getMovieSched().getStartDate()
-						.compareTo(b.getMovieSched().getStartDate());
-			}
-		});
-		System.out.println(
-				"\n ---------------------------------------------------------------------------------------------------------------------------");
-		System.out.println(
-				"|\t\t\t\t\t\t    MOVIES\t\t\t\t\t\t                    |");
-		System.out.println(
-				" ---------------------------------------------------------------------------------------------------------------------------");
-		System.out.printf("%25s %13s %13s %15s %10s %10s %15s %10s",
-				"Movie Title", "Start Date", "End Date", "Cinema Number",
-				"Rating", "Out of 5", "Start Time", "End Time");
-		System.out.println(
-				"\n ---------------------------------------------------------------------------------------------------------------------------");
-
+				return a.getMovieSched().getStartDate().compareTo(b.getMovieSched().getStartDate());
+			}		
+		});	
+		System.out.println("\n --------------------------------------------------------------------------------------------------------------------------------");
+		System.out.println("|\t\t\t\t\t\t\t    MOVIES\t\t\t\t\t\t                 |");
+		System.out.println(" --------------------------------------------------------------------------------------------------------------------------------");
+		System.out.printf("%10s %25s %13s %13s %15s %10s %10s %15s %10s" , "Movie ID", "Movie Title" , "Start Date", "End Date" ," Cinema Number" , "Rating" , "Out of 5", "Start Time" , "End Time");
+		System.out.println("\n --------------------------------------------------------------------------------------------------------------------------------"); 	
+		
 		for (Movie movie : movies.getlist()) {
-			System.out.format("%25s %13s %13s %13s %10s %10s %15s %10s",
-					movie.getTitle(), movie.getMovieSched().getStartDate(),
-					movie.getMovieSched().getEndDate(), movie.getCinemaNum(),
-					displayStarsRating(movie.getRating()), movie.getRating(),
-					movie.getMovieSched().getStartTime(),
-					(movie.getMovieSched().getEndTime()));
-			System.out.println();
+				System.out.format("%10s %25s %13s %13s %15s %10s %10s %15s %10s" ,movie.getMovieId(),movie.getTitle(),movie.getMovieSched().getStartDate(),movie.getMovieSched().getEndDate(),movie.getCinemaNum(), displayStarsRating(movie.getRating()),movie.getRating(),
+						movie.getMovieSched().getStartTime(),(movie.getMovieSched().getEndTime()));
+				System.out.println();
 		}
-		System.out.println(
-				" ---------------------------------------------------------------------------------------------------------------------------");
-
+		System.out.println(" --------------------------------------------------------------------------------------------------------------------------------"); 	
+		
 	}
 
 	public static String displayStarsRating(int rating) {
@@ -195,119 +165,107 @@ public class Menus {
 	public void createBookingView(String movie_path, String customer_path, String cinema_path) {
 
 		boolean isEnough = false;
+		long reservation_id = 0;
 		Cinema chosen_cinema = new Cinema();
 		Reservation reservation = new Reservation();
-
-		Seats seat_list = new Seats();
-		Seats r_seat_list = new Seats();
-
-		long reservation_id = 0;
-		File movie = new File(movie_path);
-		File customer = new File(customer_path);
-		File cinema = new File(cinema_path);
+		Seats seat_list = new Seats(), r_seat_list = new Seats();
+		File movie = new File(movie_path), customer = new File(customer_path);
 		Movies movies = new Movies();
 		Customers customers = new Customers();
 		Cinemas cinemas = new Cinemas();
 
-		if (error_service.isEmpty(movie) == true) {
-			System.out.println("File is Empty!");
+		if (error_service.isEmpty(movie)) {
+			System.out.println("No movies yet!");
+			return;
 		} else {
 			movies = (Movies) files_manager.readMultipleObjects(movie_path,
 					movies);
-			System.out.println(movies.getlist().get(0));
+			cinemas = cinema_service.getCinemas();
 		}
 
-		if (error_service.isEmpty(customer) == true) {
-			System.out.println("File is Empty!");
+		if (error_service.isEmpty(customer)) {
+			System.out.println("No registered customer yet!");
+			return;
 		} else {
-			customers = (Customers) files_manager
-					.readMultipleObjects(customer_path, customers);
-			System.out.println(customers.getlist().get(0));
-		}
-
-		if (error_service.isEmpty(cinema) == true) {
-			System.out.println("File is Empty!");
-		} else {
-			cinemas = ((Cinemas) files_manager.readMultipleObjects(cinema_path,
-					cinemas));
-			System.out.println(cinemas.getlist().get(0));
+			customers = (Customers) files_manager.readMultipleObjects(customer_path, customers);
 		}
 
 		System.out.print("Enter customer id: ");
 		long customer_id = sc.nextLong();
-
+		sc.nextLine();
 		reservation.setCustomer_id(customer_id);
 
 		while (isEnough != true) {
-			System.out.print("Enter cinema num: ");
-			int cinema_num = sc.nextInt();
 
-			System.out.print("(0 - exit )Enter movie id:");
-			long movie_id = sc.nextLong();
+			int cinema_num = input_service.inputCinemaNum();
+			String watch_date = input_service.setFilteredDate("Enter cinema date");
+			long movie_id = input_service.inputMovieId();
 
-			if (!error_service.movieIdValid(movie_path, movie_id)) {
-				System.out.println("Movie Invalid");
-				break;
-			}
-
-			chosen_cinema = cinemas.getlist().stream()
-					.filter(c -> c.getMovieId() == movie_id
-							&& c.getCinemaId() == cinema_num)
-					.collect(Collectors.toList()).get(0);
-
-			displaySeatPlan(chosen_cinema);
-
-			System.out.print(
-					"input_service desired seats with the format: [A2,A3,A4,B6] seats are separated by the comma: ");
-			String seats = sc.nextLine();
-			seats = sc.nextLine().toUpperCase();
-			String[] seat = seats.split(",");
-			seat_list.setlist(chosen_cinema.getSeatList().getlist());
-
-			int x = 0, counter = 0;
-			while (counter != seat.length) {
-
-				int seat_num = (int) seat[x].charAt(1);
-				char seat_row = seat[x].charAt(0);
-
-				int realSeatNum = ((seat_row - 65) * 10) + seat_num - 49;
-				Seat current_seat = (Seat) seat_list.getlist().get(realSeatNum);
-				if (!current_seat.isReserved()) {
-					current_seat.setReserved(true);
-					r_seat_list.add(seat_list.getlist().get(realSeatNum));
-					x++;
-				} else if (current_seat.isReserved()) {
-					System.out.println(
-							"This seat is reserved already.\nContinue");
-
+			if (cinema_service.isCinemaExisting(movie_id, cinema_num, watch_date, cinemas)) {
+				chosen_cinema = cinema_service.getChosenCinema(movie_id, cinema_num, watch_date, cinemas);
+				displaySeatPlan(chosen_cinema);
+				String[] seat = input_service.inputSeats();
+				seat_list.setlist(chosen_cinema.getSeatList().getlist());
+				
+				for(String st : seat){
+					
+					int seat_num = Integer.parseInt(String.valueOf(st.charAt(1)));
+					char seat_row = st.charAt(0);					
+					Seat current_seat = seat_list.getlist().stream().filter(s -> s.getSeatNum() == seat_num && s.getSeatRow() == seat_row).collect(Collectors.toList()).get(0);
+					
+					if (!current_seat.isReserved()) {
+						current_seat.setReserved(true);
+						r_seat_list.add(current_seat);
+					} else if (current_seat.isReserved()) {
+						System.out.println("There is a seat selected that is reserved already.");
+						return;
+					}
+					
 				}
 
-				counter++;
+				displaySeatPlan(chosen_cinema);
+				reservation.getBookings()
+						.add(new Booking(movie_id, r_seat_list));
+
+				System.out.println("Reserve more? (Y for yes, Any for no)");
+				String choice = sc.nextLine().toUpperCase();
+				if (choice.charAt(0) != 'Y') {
+					isEnough = true;
+				}
 			}
 
-			displaySeatPlan(chosen_cinema);
-			reservation.getBookings().add(new Booking(movie_id, r_seat_list));
-
-			System.out.println("Reserve more? (Y for yes, Any for no)");
-			String choice = sc.nextLine().toUpperCase();
-			if (choice.charAt(0) != 'Y') {
-				isEnough = true;
-			}
 		}
 
 		if (chosen_cinema.getReservations().getlist() == null) {
-			reservation_id = 1;
+			reservation_id = 0;
 		} else {
 			reservation_id = chosen_cinema.getReservations().getlist().size();
 		}
-		reservation.setReservation_id(reservation_id++);
+		reservation.setReservation_id(reservation_id+1);
 		chosen_cinema.getReservations().add(reservation);
 
-		files_manager.saveObject(cinemas, cinema_path);
-
-		System.out.println("This is the total fee: "
-				+ getTotalReservationFee(reservation, movie_path, movies));
+		
+		System.out.println("This is the total fee: " + getTotalReservationFee(reservation, movie_path, movies));
+		
+		if(isCheckOut()){			
+			files_manager.saveObject(cinemas, cinema_path);		
+		}
 	}
+	
+	public boolean isCheckOut(){
+		
+		System.out.print("Would you like to check out these seats?\n (Y for yes) (Any for No)");
+		String choice = sc.nextLine().toUpperCase();
+		
+		if(choice.equals("Y")){
+			return true;
+		} else {
+			return false;
+		}
+		
+	}
+	
+
 
 	public float getTotalReservationFee(Reservation r, String movie_path,
 			Movies movies) {
@@ -330,8 +288,10 @@ public class Menus {
 			for (Seat seat : seats) {
 
 				if (cinema_service.isHotRow(seat.getSeatRow())) {
+					System.out.println("HotSeat " + seat.getSeatRow() + seat.getSeatNum() + ": " + hotPrice + ".");
 					total += hotPrice;
 				} else if (cinema_service.isRegularRow(seat.getSeatRow())) {
+					System.out.println("RegSeat " + seat.getSeatRow() + seat.getSeatNum() + ": " + moviePrice + ".");
 					total += moviePrice;
 				}
 
@@ -342,8 +302,8 @@ public class Menus {
 		return total;
 
 	}
-
-	public void cancelBookingView() {// add more as needed
+	
+	public void cancelBookingView() {
 		String cinema_path = "cinema_records.xml";
 		Cinemas cinemas = new Cinemas();
 		CinemaService cservice = new CinemaService();
@@ -353,7 +313,15 @@ public class Menus {
 		List<Reservation> reservation_list = new ArrayList<>();
 		List<Cinema> cs = new ArrayList<>();
 
+		String customer_id = "";
+		long parsed_customer_id;
+				
 		// ask customer id
+		do{
+			System.out.print("\n\nEnter customer id: ");
+			customer_id = sc.nextLine();
+		}while(!error_service.isValidNumber(customer_id));
+		parsed_customer_id = Integer.parseInt(customer_id);
 
 		cs = cinemas.getlist();
 
@@ -363,54 +331,138 @@ public class Menus {
 			if (c.getReservations().getlist() != null) {
 				reservation_list.addAll(c.getReservations().getlist().stream()
 						.filter(reservation -> reservation
-								.getCustomer_id() == 1)
+								.getCustomer_id() == parsed_customer_id)
 						.collect(Collectors.toList()));
 			}
 		}
-
-		// input desired reservation id to be deleted
-
-		Reservation cancel_r = reservation_list.stream()
-				.filter(r -> r.getReservation_id() == 1)
-				.collect(Collectors.toList()).get(0);
-
-		// loop bookings to find the cinema seats, and update the cancel_r list
-		// of seats to not reserved.
-		for (Booking b : cancel_r.getBookings().getlist()) {
-
-			int cinema_num = cservice.getCinemaNum(b.getMovieId());
-
-			Cinema chosen_cinema = cinemas.getlist().stream()
-					.filter(c -> c.getCinemaId() == cinema_num)
-					.collect(Collectors.toList()).get(0);
-
-			ArrayList<Seat> seats = (ArrayList<Seat>) chosen_cinema
-					.getSeatList().getlist();
-			ArrayList<Seat> b_seats = (ArrayList<Seat>) b.getSeats().getlist();
-
-			for (Seat s : seats) {
-
-				for (Seat sb : b_seats) {
-
-					if (s.getSeatNum() == sb.getSeatNum()
-							&& s.getSeatRow() == sb.getSeatRow()) {
-						s.setReserved(false);
-					}
-
-				}
-
+		
+		if(reservation_list.size()>0){
+			//display all reservation
+			System.out.println("\"Reservation IDs of the customer\"");
+			for (Reservation r : reservation_list) {
+				System.out.println(r.getReservation_id()); 
 			}
-			Seats ss = new Seats();
-			ss.setlist(seats);
+			
 
-			chosen_cinema.getReservations().getlist().remove(cancel_r);
-			chosen_cinema.setSeatList(ss);
+			// input desired reservation id to be deleted
+			System.out.print("Enter reservation id that you want to delete: ");
+			long reservation_id = sc.nextLong();
+			
+			try{
+				Reservation cancel_r = reservation_list.stream()
+						.filter(r -> r.getReservation_id() == reservation_id)
+						.collect(Collectors.toList()).get(0);
+				
+				if(cancel_r != null){
+					// loop bookings to find the cinema seats, and update the cancel_r list
+					// of seats to not reserved.
+					for (Booking b : cancel_r.getBookings().getlist()){
 
+						int cinema_num = cservice.getCinemaNum(b.getMovieId());
+
+						Cinema chosen_cinema = cinemas.getlist().stream()
+								.filter(c -> c.getCinemaId() == cinema_num)
+								.collect(Collectors.toList()).get(0);
+
+						ArrayList<Seat> seats = (ArrayList<Seat>) chosen_cinema
+								.getSeatList().getlist();
+						ArrayList<Seat> b_seats = (ArrayList<Seat>) b.getSeats().getlist();
+
+						for (Seat s : seats) {
+							for (Seat sb : b_seats) {
+								if (s.getSeatNum() == sb.getSeatNum()
+										&& s.getSeatRow() == sb.getSeatRow()) {
+									s.setReserved(false);
+								}
+							}
+						}
+						Seats ss = new Seats();
+						ss.setlist(seats);
+
+						chosen_cinema.getReservations().getlist().remove(cancel_r);
+						chosen_cinema.setSeatList(ss);
+					}
+					files_manager.saveObject(cinemas, cinema_path);
+				}
+			}catch(Exception e){
+				System.out.println("Inputted reservation ID was not made by the customer.");
+			}
+			
+		}else{
+			System.out.println("No Reservation Made by the Customer.");
 		}
-
-		files_manager.saveObject(cinemas, cinema_path);
+		
 
 	}
+
+//	public void cancelBookingView() {// add more as needed
+//		String cinema_path = "cinema_records.xml";
+//		Cinemas cinemas = new Cinemas();
+//		CinemaService cservice = new CinemaService();
+//
+//		cinemas = (Cinemas) files_manager.readMultipleObjects(cinema_path,
+//				cinemas);
+//		List<Reservation> reservation_list = new ArrayList<>();
+//		List<Cinema> cs = new ArrayList<>();
+//
+//		// ask customer id
+//
+//		cs = cinemas.getlist();
+//
+//		// find all reservation in cinemas
+//		for (Cinema c : cs) {
+//			// 1 here is the customer id
+//			if (c.getReservations().getlist() != null) {
+//				reservation_list.addAll(c.getReservations().getlist().stream()
+//						.filter(reservation -> reservation
+//								.getCustomer_id() == 1)
+//						.collect(Collectors.toList()));
+//			}
+//		}
+//
+//		// input desired reservation id to be deleted
+//
+//		Reservation cancel_r = reservation_list.stream()
+//				.filter(r -> r.getReservation_id() == 1)
+//				.collect(Collectors.toList()).get(0);
+//
+//		// loop bookings to find the cinema seats, and update the cancel_r list
+//		// of seats to not reserved.
+//		for (Booking b : cancel_r.getBookings().getlist()) {
+//
+//			int cinema_num = cservice.getCinemaNum(b.getMovieId());
+//
+//			Cinema chosen_cinema = cinemas.getlist().stream()
+//					.filter(c -> c.getCinemaId() == cinema_num)
+//					.collect(Collectors.toList()).get(0);
+//
+//			ArrayList<Seat> seats = (ArrayList<Seat>) chosen_cinema
+//					.getSeatList().getlist();
+//			ArrayList<Seat> b_seats = (ArrayList<Seat>) b.getSeats().getlist();
+//
+//			for (Seat s : seats) {
+//
+//				for (Seat sb : b_seats) {
+//
+//					if (s.getSeatNum() == sb.getSeatNum()
+//							&& s.getSeatRow() == sb.getSeatRow()) {
+//						s.setReserved(false);
+//					}
+//
+//				}
+//
+//			}
+//			Seats ss = new Seats();
+//			ss.setlist(seats);
+//
+//			chosen_cinema.getReservations().getlist().remove(cancel_r);
+//			chosen_cinema.setSeatList(ss);
+//
+//		}
+//
+//		files_manager.saveObject(cinemas, cinema_path);
+//
+//	}
 
 	// improve to grid grid.x
 	public void displaySeatPlan(Cinema cinema) {

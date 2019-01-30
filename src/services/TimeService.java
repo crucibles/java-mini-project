@@ -1,5 +1,6 @@
 package services;
 
+import java.io.File;
 import java.sql.Time;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -15,6 +16,10 @@ import model.Movie;
 import model.Movies;
 
 public class TimeService {
+	private FileService fs = new FileService();
+	final static String movie_path = "movie_records.xml";
+	private ErrorTrapService es = new ErrorTrapService();
+	
 	/**
 	 * Author: Padrigano Description: Changes a string with format MM DD YYYY to
 	 * Class Date Date Modified: 1/25/2019
@@ -90,33 +95,18 @@ public class TimeService {
 		return false;
 	}
 
-	public boolean isDateAvailable(String s_date, String e_date) {
+	public boolean isDateAvailable(String s_date, String e_date, int c_num) {
 
+		CinemaService cs = new CinemaService();
 		Movies movies = new Movies();
-		LocalDate temp_date = LocalDate.parse(s_date);
-
-		if (movies.getlist() == null) {
+		if(es.isEmpty(new File(movie_path))){
 			return true;
-		} else {
-
-			for (Movie m : movies.getlist()) {
-				
-				LocalDate current_date = LocalDate.parse(m.getMovieSched().getStartDate());
-				LocalDate end_date = LocalDate.parse(m.getMovieSched().getEndDate());
-				
-				while(current_date != end_date){
-					
-					if (current_date.equals(temp_date)) {
-						return false;
-					}
-					current_date.plusDays(1);
-					
-				}
-				
-			}
-
 		}
+		movies = fs.readMultipleObjects(movie_path, movies);
+		LocalDate temp_sdate = LocalDate.parse(s_date);
+		LocalDate temp_edate = LocalDate.parse(e_date);
 
-		return true;
+		return cs.isCinemaAvailable(c_num, temp_sdate, temp_edate);
+
 	}
 }

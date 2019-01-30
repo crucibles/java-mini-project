@@ -4,8 +4,15 @@ import java.util.Scanner;
 
 public class InputService {
 	Scanner sc = new Scanner(System.in);
-	ErrorTrapService error_check;
-	TimeService time_methods;
+	ErrorTrapService es;
+	TimeService ts;
+	CinemaService cs;
+	final static char min_row = 'A';
+	final static char max_row = 'O';
+	final static char min_hot_row = 'F';
+	final static char max_hot_row = 'J';
+	final static int min_seat_num = 1;
+	final static int max_seat_num = 10;
 	final static int min_cinema_num = 1;
 	final static int max_cinema_num = 4;
 	final static int min_rating = 0;
@@ -13,8 +20,9 @@ public class InputService {
 	private String input = "";
 
 	public InputService() {
-		error_check = new ErrorTrapService();
-		time_methods = new TimeService();
+		es = new ErrorTrapService();
+		ts = new TimeService();
+		cs = new CinemaService();
 	}
 
 	public int inputRating() {
@@ -29,7 +37,7 @@ public class InputService {
 			} catch (NumberFormatException e) {
 				System.out.print("Enter a valid rating: ");
 			}
-		} while (!error_check.isValidRating(rating));
+		} while (!es.isValidRating(rating));
 
 		return rating;
 	}
@@ -38,7 +46,7 @@ public class InputService {
 		System.out.print("Enter genre:  ");
 		String genre = sc.nextLine();
 		genre = genre.toLowerCase();
-		while (!error_check.isValidGenre(genre)) {
+		while (!es.isValidGenre(genre)) {
 			System.out.print("a valid genre: ");
 			genre = sc.nextLine();
 		}
@@ -55,7 +63,7 @@ public class InputService {
 				System.out.print("Enter cinema num: ");
 				input = sc.nextLine();
 				cn = Integer.parseInt(input);
-				if (error_check.isValidCinemaNum(cn)) {
+				if (es.isValidCinemaNum(cn)) {
 					break;
 				} else {
 					System.out.println("Invalid input. Try again.");
@@ -64,7 +72,30 @@ public class InputService {
 			} catch (NumberFormatException e) {
 				System.out.print("Invalid input. Try again.");
 			}
-		} while (!error_check.isValidCinemaNum(cn));
+		} while (!es.isValidCinemaNum(cn));
+
+		return cn;
+	}
+	
+	public long inputMovieId() {
+
+		long cn = -1;
+
+		do {
+			try {
+				System.out.print("Enter movie id: ");
+				input = sc.nextLine();
+				cn = Long.parseLong(input);
+				if (es.isValidMovieId(cn)) {
+					break;
+				} else {
+					System.out.println("Invalid input. Try again.");
+					continue;
+				}
+			} catch (NumberFormatException e) {
+				System.out.print("Invalid input. Try again.");
+			}
+		} while (!es.isValidMovieId(cn));
 
 		return cn;
 	}
@@ -81,12 +112,13 @@ public class InputService {
 		boolean not_legit = true;
 		// error-trap for Title input
 		while (not_legit) {
-			System.out.println("Enter title:");
+			System.out.print("Enter title: ");
 			title = sc.nextLine();
-			if (error_check.isValidString(title)) {
+			if (es.isValidString(title)) {
 				not_legit = false;
-			} else
+			} else {
 				System.out.println("Invalid input. Enter again.");
+			}
 		}
 		return title;
 	}
@@ -102,11 +134,11 @@ public class InputService {
 		int rating = 0;
 		boolean not_legit = true;
 		while (not_legit) {
-			System.out.println("Enter rating(out of 5):");
+			System.out.print("Enter rating(out of 5): ");
 			temp = sc.nextLine();
-			if (error_check.isValidNumber(temp)) {
+			if (es.isValidNumber(temp)) {
 				rating = Integer.parseInt(temp);
-				if (error_check.isValidRating(rating)) {
+				if (es.isValidRating(rating)) {
 					not_legit = false;
 				} else {
 					System.out.println("Invalid input. Enter again.");
@@ -128,7 +160,7 @@ public class InputService {
 				System.out.print("Enter number of days: ");
 				input = sc.nextLine();
 				cn = Integer.parseInt(input);
-				if (error_check.isValidNumber(input)) {
+				if (es.isValidNumber(input)) {
 					break;
 				} else {
 					System.out.println("Invalid input. Try again.");
@@ -137,7 +169,7 @@ public class InputService {
 			} catch (NumberFormatException e) {
 				System.out.print("Invalid input. Try again.");
 			}
-		} while (!error_check.isValidNumber(input) && cn<=0);
+		} while (!es.isValidNumber(input) && cn <= 0);
 
 		return cn;
 	}
@@ -146,11 +178,11 @@ public class InputService {
 		String genre = "";
 		boolean not_legit = true;
 		while (not_legit) {
-			System.out.println("Enter genre:");
+			System.out.print("Enter genre: ");
 			genre = sc.nextLine();
-			if (error_check.isValidString(genre)) {
+			if (es.isValidString(genre)) {
 				genre = genre.toLowerCase();
-				if (error_check.isValidGenre(genre)) {
+				if (es.isValidGenre(genre)) {
 					not_legit = false;
 				} else {
 					System.out.println("Invalid input. Enter again.");
@@ -168,13 +200,43 @@ public class InputService {
 		while (start_me) {
 			System.out.print(msg + ": ");
 			start_date = sc.nextLine();
-			if (error_check.isValidDate(start_date)) {
+			if (es.isValidDate(start_date)) {
 				start_me = false;
 			} else {
 				System.out.println("Invalid input. Enter again.");
 			}
 		}
 		return start_date;
+	}
+	
+	public String[] inputSeats(){
+		boolean flag = true;
+		String[] seats;
+		
+		do{
+			flag = true;
+			System.out.print("Input seats to reserve.\nThis is the format [A2,A3,A4,B6].\nSeats are separated by the comma: ");
+			seats = sc.nextLine().toUpperCase().split(",");
+			try{				
+				for(String s: seats){
+					char row = s.charAt(0);
+					int num = Integer.parseInt(String.valueOf(s.charAt(1)));
+					
+					System.out.println(row + ": " +  num);
+					// inputs are real rows and columns of seat
+					if( !(row >= min_row && row <= max_row && num >= min_seat_num && num<= max_seat_num)){
+						flag = false;
+						break;
+					}
+				}
+			} catch(NumberFormatException e){
+				System.out.println("Invalid seat inputted.");
+				flag = false;
+			}
+			
+		}while(!flag);
+		
+		return seats;
 	}
 
 	public String setFilteredTime(int type) {
@@ -183,14 +245,14 @@ public class InputService {
 		String[] parts;
 		while (valid) {
 			if (type == 1) {
-				System.out.println("Enter Start Time(Military Time)(HH:MM):");
+				System.out.print("Enter Start Time(Military Time)(HH:MM): ");
 			} else {
-				System.out.println("Enter End Time(Military Time)(HH:MM):");
+				System.out.print("Enter End Time(Military Time)(HH:MM): ");
 			}
 
 			time = sc.nextLine();
 			try {
-				if (error_check.isLegitTime(time)) {
+				if (es.isLegitTime(time)) {
 					parts = time.split(":");
 					valid = false;
 				} else {
@@ -201,6 +263,23 @@ public class InputService {
 			}
 		}
 		return time;
+	}
+
+	public float inputPrice() {
+		
+		float cn = -1;
+
+		do {
+			try {
+				System.out.print("Enter price: ");
+				input = sc.nextLine();
+				cn = Float.parseFloat(input);
+			} catch (NumberFormatException e) {
+				System.out.print("Invalid input. Try again.");
+			}
+		} while (cn == -1);
+
+		return cn;
 	}
 
 }
