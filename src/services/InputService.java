@@ -7,16 +7,17 @@ public class InputService {
 	ErrorTrapService es;
 	TimeService ts;
 	CinemaService cs;
-	final static char min_row = 'A';
-	final static char max_row = 'O';
-	final static char min_hot_row = 'F';
-	final static char max_hot_row = 'J';
-	final static int min_seat_num = 1;
-	final static int max_seat_num = 10;
-	final static int min_cinema_num = 1;
-	final static int max_cinema_num = 4;
-	final static int min_rating = 0;
-	final static int max_rating = 5;
+	final static char MIN_ROW = 'A';
+	final static char MAX_ROW = 'O';
+	final static char MIN_HOT_ROW = 'F';
+	final static char MAX_HOT_ROW = 'J';
+	final static int MIN_SEAT_NUM = 1;
+	final static int MAX_SEAT_NUM = 10;
+	final static int MIN_CINEMA_NUM = 1;
+	final static int MAX_CINEMA_NUM = 4;
+	final static int MIN_RATING = 0;
+	final static int MAX_RATING = 5;
+	private final static String[] GENRE_LIST = {"horror", "action", "drama", "comedy", "romance"};
 	private String input = "";
 
 	public InputService() {
@@ -122,9 +123,9 @@ public class InputService {
 		}
 		return title;
 	}
+	
 	/**
 	 * Author: Padrigano Description: Error trap the rating input by the user.
-	 * 
 	 * @param not_legit
 	 * @param movie
 	 * @return
@@ -177,15 +178,22 @@ public class InputService {
 	public String setFilteredGenre() {
 		String genre = "";
 		boolean not_legit = true;
-		while (not_legit) {
+		
+		System.out.println("* * * * * *");
+		System.out.println("*  GENRE  *");
+		System.out.println("* * * * * *");
+		for(int i = 0;i< GENRE_LIST.length;i++){
+			System.out.println(GENRE_LIST[i]);
+		}
+		while(not_legit){
 			System.out.print("Enter genre: ");
 			genre = sc.nextLine();
 			if (es.isValidString(genre)) {
 				genre = genre.toLowerCase();
 				if (es.isValidGenre(genre)) {
 					not_legit = false;
-				} else {
-					System.out.println("Invalid input. Enter again.");
+				}else{
+					System.out.println("Invalid input. Enter again.");	
 				}
 			}
 		}
@@ -224,7 +232,7 @@ public class InputService {
 					
 					System.out.println(row + ": " +  num);
 					// inputs are real rows and columns of seat
-					if( !(row >= min_row && row <= max_row && num >= min_seat_num && num<= max_seat_num)){
+					if( !(row >= MIN_ROW && row <= MAX_ROW && num >= MIN_SEAT_NUM && num<= MAX_SEAT_NUM)){
 						flag = false;
 						break;
 					}
@@ -243,6 +251,7 @@ public class InputService {
 		boolean valid = true;
 		String time = "";
 		String[] parts;
+		
 		while (valid) {
 			if (type == 1) {
 				System.out.print("Enter Start Time(Military Time)(HH:MM): ");

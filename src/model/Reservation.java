@@ -1,20 +1,19 @@
 package model;
 
-
 public class Reservation {
 	private long reservation_id;
 	private long customer_id;
 	private Bookings bookings;
-	
-	public Reservation(){
+
+	public Reservation() {
 		bookings = new Bookings();
 	}
-	
-	public Reservation(long customerId){
+
+	public Reservation(long customerId) {
 		setCustomer_id(customerId);
 		bookings = new Bookings();
 	}
-	
+
 	public long getReservation_id() {
 		return reservation_id;
 	}
@@ -35,12 +34,9 @@ public class Reservation {
 	public void setBookings(Bookings reservations) {
 		this.bookings = reservations;
 	}
-	
-	public void displaySeatPlan(long movieId){
-		
+
+	public void displaySeatPlan(long movieId) {
+
 	}
 
-	
-	
-	
 }

@@ -3,9 +3,7 @@ package model;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
-
 import javax.xml.bind.annotation.XmlRootElement;
-
 
 @XmlRootElement(name = "schedule")
 public class MovieSched {
@@ -19,7 +17,7 @@ public class MovieSched {
 	public MovieSched() {
 
 	}
-	
+
 	public MovieSched(LocalDate sd, int nd, LocalTime st, LocalTime et) {
 		setStartDate(sd.toString());
 		setEndDate(sd.plusDays(nd).toString());
@@ -32,7 +30,7 @@ public class MovieSched {
 	public String getStartDate() {
 		return start_date.toString();
 	}
-	
+
 	public void setStartDate(String string) {
 		start_date = string;
 	}

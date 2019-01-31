@@ -26,6 +26,8 @@ import services.InputService;
 import services.TimeService;
 
 public class Menus {
+	final static char MIN_ROW = 'A';
+	final static char MAX_ROW = 'O';
 	final static private int LINE = 1;
 	private ErrorTrapService error_service;
 	private FileService files_manager;
@@ -89,7 +91,6 @@ public class Menus {
 		LocalDate sd, ed;
 		int num_of_days = 0;
 		TimeService ts = new TimeService();
-		float price;
 
 		try {
 
@@ -98,7 +99,6 @@ public class Menus {
 			movie.setGenre(input_service.setFilteredGenre());
 			movie.setCinemaNum(input_service.inputCinemaNum());
 			
-			System.out.println("Input an accepted date.");
 			do {
 				start_date = input_service.setFilteredDate("Input Start Date");
 				sd = LocalDate.parse(start_date);
@@ -200,6 +200,9 @@ public class Menus {
 			int cinema_num = input_service.inputCinemaNum();
 			String watch_date = input_service.setFilteredDate("Enter cinema date");
 			long movie_id = input_service.inputMovieId();
+			
+			System.out.println("cn: " + cinema_num + " wd: " + watch_date + "mi: " + movie_id);
+
 
 			if (cinema_service.isCinemaExisting(movie_id, cinema_num, watch_date, cinemas)) {
 				chosen_cinema = cinema_service.getChosenCinema(movie_id, cinema_num, watch_date, cinemas);
@@ -307,9 +310,14 @@ public class Menus {
 		String cinema_path = "cinema_records.xml";
 		Cinemas cinemas = new Cinemas();
 		CinemaService cservice = new CinemaService();
+		
+		File f = new File(cinema_path);
+		if (error_service.isEmpty(f) == true) {
+			System.out.println("File is Empty!");
+			return;
+		}
 
-		cinemas = (Cinemas) files_manager.readMultipleObjects(cinema_path,
-				cinemas);
+		cinemas = (Cinemas) files_manager.readMultipleObjects(cinema_path, cinemas);
 		List<Reservation> reservation_list = new ArrayList<>();
 		List<Cinema> cs = new ArrayList<>();
 
@@ -395,74 +403,6 @@ public class Menus {
 
 	}
 
-//	public void cancelBookingView() {// add more as needed
-//		String cinema_path = "cinema_records.xml";
-//		Cinemas cinemas = new Cinemas();
-//		CinemaService cservice = new CinemaService();
-//
-//		cinemas = (Cinemas) files_manager.readMultipleObjects(cinema_path,
-//				cinemas);
-//		List<Reservation> reservation_list = new ArrayList<>();
-//		List<Cinema> cs = new ArrayList<>();
-//
-//		// ask customer id
-//
-//		cs = cinemas.getlist();
-//
-//		// find all reservation in cinemas
-//		for (Cinema c : cs) {
-//			// 1 here is the customer id
-//			if (c.getReservations().getlist() != null) {
-//				reservation_list.addAll(c.getReservations().getlist().stream()
-//						.filter(reservation -> reservation
-//								.getCustomer_id() == 1)
-//						.collect(Collectors.toList()));
-//			}
-//		}
-//
-//		// input desired reservation id to be deleted
-//
-//		Reservation cancel_r = reservation_list.stream()
-//				.filter(r -> r.getReservation_id() == 1)
-//				.collect(Collectors.toList()).get(0);
-//
-//		// loop bookings to find the cinema seats, and update the cancel_r list
-//		// of seats to not reserved.
-//		for (Booking b : cancel_r.getBookings().getlist()) {
-//
-//			int cinema_num = cservice.getCinemaNum(b.getMovieId());
-//
-//			Cinema chosen_cinema = cinemas.getlist().stream()
-//					.filter(c -> c.getCinemaId() == cinema_num)
-//					.collect(Collectors.toList()).get(0);
-//
-//			ArrayList<Seat> seats = (ArrayList<Seat>) chosen_cinema
-//					.getSeatList().getlist();
-//			ArrayList<Seat> b_seats = (ArrayList<Seat>) b.getSeats().getlist();
-//
-//			for (Seat s : seats) {
-//
-//				for (Seat sb : b_seats) {
-//
-//					if (s.getSeatNum() == sb.getSeatNum()
-//							&& s.getSeatRow() == sb.getSeatRow()) {
-//						s.setReserved(false);
-//					}
-//
-//				}
-//
-//			}
-//			Seats ss = new Seats();
-//			ss.setlist(seats);
-//
-//			chosen_cinema.getReservations().getlist().remove(cancel_r);
-//			chosen_cinema.setSeatList(ss);
-//
-//		}
-//
-//		files_manager.saveObject(cinemas, cinema_path);
-//
-//	}
 
 	// improve to grid grid.x
 	public void displaySeatPlan(Cinema cinema) {
@@ -470,7 +410,7 @@ public class Menus {
 		System.out.println(
 				"==================== SEAT PLAN ======================");
 
-		for (char a = 'A'; a <= 'O'; a++) {
+		for (char a = MIN_ROW; a <= MAX_ROW; a++) {
 			System.out.print(a + ": ");
 			for (int b = 1; b <= 10; b++) {
 

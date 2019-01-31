@@ -8,17 +8,16 @@ public class Seat {
 	private char seatRow;
 	private int seatNum;
 	private boolean isReserved;
-	
-	public Seat(){
-		
+
+	public Seat() {
+
 	}
-	
-	public Seat(char seatRow, int seatNum, boolean reserved){
+
+	public Seat(char seatRow, int seatNum, boolean reserved) {
 		setSeatRow(seatRow);
 		setReserved(reserved);
 		setSeatNum(seatNum);
 	}
-	
 
 	public boolean isReserved() {
 		return isReserved;

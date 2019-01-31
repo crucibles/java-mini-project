@@ -15,21 +15,21 @@ import model.RegularSeat;
 import model.Seat;
 
 public class CinemaService {
-	final static char min_row = 'A';
-	final static char max_row = 'O';
-	final static char min_hot_row = 'F';
-	final static char max_hot_row = 'J';
-	final static int min_seat_num = 1;
-	final static int max_seat_num = 10;
-	final static String cinema_path = "cinema_records.xml";
+	final static char MIN_ROW = 'A';
+	final static char MAX_ROW = 'O';
+	final static char MIN_HOT_ROW = 'F';
+	final static char MAX_HOT_ROW = 'J';
+	final static int MIN_SEAT_NUM = 1;
+	final static int MAX_SEAT_NUM = 10;
+	final static String CINEMA_PATH = "cinema_records.xml";
 	private FileService fs = new FileService();
 	private ErrorTrapService es = new ErrorTrapService();
 
 	public void initializeSeatList(Cinema c) {
 
-		for (char row = min_row; row <= max_row; row++) {
+		for (char row = MIN_ROW; row <= MAX_ROW; row++) {
 
-			for (int seat_num = min_seat_num; seat_num <= max_seat_num; seat_num++) {
+			for (int seat_num = MIN_SEAT_NUM; seat_num <= MAX_SEAT_NUM; seat_num++) {
 
 				if (isHotRow(row)) {
 					c.getSeatList().add(new HotSeat(row, seat_num, false));
@@ -44,7 +44,7 @@ public class CinemaService {
 	}
 	
 	public Cinemas getCinemas(){
-		return ((Cinemas) fs.readMultipleObjects(cinema_path,new Cinemas()));
+		return ((Cinemas) fs.readMultipleObjects(CINEMA_PATH,new Cinemas()));
 	}
 	
 	public Cinema getChosenCinema(long movie_id, int cinema_num, String date, Cinemas cinemas){
@@ -67,7 +67,7 @@ public class CinemaService {
 
 	public boolean isHotRow(char row) {
 
-		if (row >= min_hot_row && row <= max_hot_row) {
+		if (row >= MIN_HOT_ROW && row <= MAX_HOT_ROW) {
 			return true;
 		}
 
@@ -76,7 +76,7 @@ public class CinemaService {
 
 	public boolean isRegularRow(char row) {
 
-		if (row >= min_hot_row && row <= max_hot_row) {
+		if (row >= MIN_HOT_ROW && row <= MAX_HOT_ROW) {
 			return false;
 		}
 

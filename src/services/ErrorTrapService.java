@@ -3,16 +3,16 @@ package services;
 import java.io.File;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import model.Movies;
 
 public class ErrorTrapService {
 	private FileService files_manager;
-	final static int min_cinema_num = 1;
-	final static int max_cinema_num = 4;
-	final static int min_rating = 0;
-	final static int max_rating = 5;
-	final static int min_movie_id = 1;
+	final static int MIN_CINEMA_NUM = 1;
+	final static int MAX_CINEMA_NUM = 4;
+	final static int MIN_RATING = 0;
+	final static int MAX_RATING = 5;
+	final static int MIN_MOVIE_ID = 1;
+	final static String[] GENRE_LIST = {"horror", "action", "drama", "comedy", "romance"};
 
 	public ErrorTrapService() {
 		files_manager = new FileService();
@@ -53,7 +53,7 @@ public class ErrorTrapService {
 	 * @return boolean
 	 */
 	public boolean isValidRating(int i) {
-		if (!(i < min_rating) && i <= max_rating) {
+		if (!(i < MIN_RATING) && i <= MAX_RATING) {
 			return true;
 		} else {
 			return false;
@@ -114,9 +114,11 @@ public class ErrorTrapService {
 	 */
 	public boolean isValidGenre(String str) {
 		boolean result = false;
-		if (str.equals("action") || str.equals("drama")
-				|| str.equals("horror")) {
-			result = true;
+		for(int i=0;i<GENRE_LIST.length;i++){
+			if(str.equals(GENRE_LIST[i])){
+				result = true;
+				break;
+			}
 		}
 		return result;
 	}
@@ -130,7 +132,7 @@ public class ErrorTrapService {
 
 	public boolean isValidCinemaNum(int cn) {
 
-		if (!(cn < min_cinema_num) && cn <= max_cinema_num) {
+		if (!(cn < MIN_CINEMA_NUM) && cn <= MAX_CINEMA_NUM) {
 			return true;
 		} else {
 			return false;
@@ -140,7 +142,7 @@ public class ErrorTrapService {
 	
 	public boolean isValidMovieId(long cn) {
 
-		if (!(cn < min_movie_id)) {
+		if (!(cn < MIN_MOVIE_ID)) {
 			return true;
 		} else {
 			return false;

@@ -13,14 +13,14 @@ public class MainController {
 	// declarations
 	private static Menus menu;
 	private static FileService files_manager;
-	private static String movie_path = "movie_records.xml";
-	private static String customer_path = "customer_records.xml";
-	private static String cinema_path = "cinema_records.xml";
-	final static char create_movie = 'A';
-	final static char display_movie = 'B';
-	final static char create_booking = 'C';
-	final static char cancel_booking = 'D';
-	final static char exit = 'E';
+	private final static String MOVIE_PATH = "movie_records.xml";
+	private final static String CUSTOMER_PATH = "customer_records.xml";
+	private final static String CINEMA_PATH = "cinema_records.xml";
+	final static char CREATE_MOVIE = 'A';
+	final static char DISPLAY_MOVIE = 'B';
+	final static char CREATE_BOOKING = 'C';
+	final static char CANCEL_BOOKING = 'D';
+	final static char EXIT = 'E';
 
 	/**
 	 * Initial Author: Padrigano Last Author: Padrigano Description: Controls
@@ -30,7 +30,6 @@ public class MainController {
 	 */
 	public static void main(String[] args) {
 		char choice;
-		initializeFileManager();
 		files_manager = new FileService();
 		files_manager.populateCustomers();
 		initializeFileManager();
@@ -41,37 +40,37 @@ public class MainController {
 
 			switch (choice) {
 
-				case create_movie : {
+				case CREATE_MOVIE : {
 					createMovie();
 					break;
 				}
 
-				case display_movie : {
-					menu.displayMovieView(movie_path);
+				case DISPLAY_MOVIE : {
+					menu.displayMovieView(MOVIE_PATH);
 					break;
 				}
 
-				case create_booking : {
-					menu.createBookingView(movie_path, customer_path,
-							cinema_path);
+				case CREATE_BOOKING : {
+					menu.createBookingView(MOVIE_PATH, CUSTOMER_PATH,
+							CINEMA_PATH);
 					break;
 				}
 
-				case cancel_booking : {
+				case CANCEL_BOOKING : {
 					menu.cancelBookingView();
 				}
 
 			}
 
-		} while (choice != exit);
+		} while (choice != EXIT);
 
 	}
 
 	private static void initializeFileManager() {
 		files_manager = new FileService();
-		files_manager.createFile(movie_path);
-		files_manager.createFile(cinema_path);
-		files_manager.createFile(customer_path);
+		files_manager.createFile(MOVIE_PATH);
+		files_manager.createFile(CINEMA_PATH);
+		files_manager.createFile(CUSTOMER_PATH);
 	}
 
 	private static void createMovie() {
@@ -82,45 +81,39 @@ public class MainController {
 		Cinemas cinemas = new Cinemas();
 		ErrorTrapService ec = new ErrorTrapService();
 
-		if (!ec.isEmpty(new File(movie_path))) {
-			System.out.println("hello");
-			movies = (Movies) files_manager.readMultipleObjects(movie_path,
+		if (!ec.isEmpty(new File(MOVIE_PATH))) {
+			movies = (Movies) files_manager.readMultipleObjects(MOVIE_PATH,
 					movies);
-			cinemas = (Cinemas) files_manager.readMultipleObjects(cinema_path,
+			cinemas = (Cinemas) files_manager.readMultipleObjects(CINEMA_PATH,
 					cinemas);
 			latest_id = movies.getlist().size();
-			System.out.println("adsasd" + cinemas);
 		}
 
 		temp_movie = menu.createMovieView(temp_movie);
-		System.out.println(latest_id);
 
 		if (latest_id == 0) {
 
 			latest_id++;
 			temp_movie.setMovieId(latest_id);
 			movies.add(temp_movie);
-			files_manager.saveObject(movies, movie_path);
+			files_manager.saveObject(movies, MOVIE_PATH);
 
-			System.out.println("KILOOOOO");
 			// make all cinemas for that movie
 			cinemas.setlist(temp_cinema.getCs().makeCinemasForMovie(temp_movie));
-			System.out.println("KILOOOOO");
-
-			System.out.println();
-			files_manager.saveObject(cinemas, cinema_path);
+			files_manager.saveObject(cinemas, CINEMA_PATH);
 
 		} else {
 			
 			latest_id++;
 			temp_movie.setMovieId(latest_id);
 			movies.add(temp_movie);
-			files_manager.saveObject(movies, movie_path);
+			files_manager.saveObject(movies, MOVIE_PATH);
 
 			// make all cinemas for that movie
 			cinemas.getlist().addAll(temp_cinema.getCs().makeCinemasForMovie(temp_movie));
-			files_manager.saveObject(cinemas, cinema_path);
+			files_manager.saveObject(cinemas, CINEMA_PATH);
 		}
+		
 
 	} // create movie bracket
 

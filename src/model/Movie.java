@@ -1,7 +1,5 @@
 package model;
 
-
-
 /**
  * 
  * @author april.padrigano
