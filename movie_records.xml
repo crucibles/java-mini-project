@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <movies>
     <movie>
-        <cinemaNum>2</cinemaNum>
-        <genre>horror</genre>
+        <cinemaNum>1</cinemaNum>
+        <genre>action</genre>
         <movieId>1</movieId>
         <movieSched>
             <duration>PT2H</duration>
@@ -12,40 +12,24 @@
             <startDate>2019-02-12</startDate>
             <startTime>09:30</startTime>
         </movieSched>
-        <price>100.0</price>
-        <rating>4</rating>
+        <price>200.0</price>
+        <rating>5</rating>
         <title>Lion King</title>
     </movie>
     <movie>
-        <cinemaNum>1</cinemaNum>
-        <genre>drama</genre>
+        <cinemaNum>2</cinemaNum>
+        <genre>horror</genre>
         <movieId>2</movieId>
         <movieSched>
-            <duration>PT20M</duration>
+            <duration>PT2H</duration>
             <endDate>2019-02-14</endDate>
-            <endTime>03:30</endTime>
+            <endTime>11:30</endTime>
             <numberOfDays>2</numberOfDays>
             <startDate>2019-02-12</startDate>
-            <startTime>03:10</startTime>
+            <startTime>09:30</startTime>
         </movieSched>
         <price>100.0</price>
         <rating>4</rating>
-        <title>Alice in wonderland</title>
-    </movie>
-    <movie>
-        <cinemaNum>1</cinemaNum>
-        <genre>comedy</genre>
-        <movieId>3</movieId>
-        <movieSched>
-            <duration>PT2H</duration>
-            <endDate>2019-02-17</endDate>
-            <endTime>11:30</endTime>
-            <numberOfDays>2</numberOfDays>
-            <startDate>2019-02-15</startDate>
-            <startTime>09:30</startTime>
-        </movieSched>
-        <price>150.0</price>
-        <rating>2</rating>
-        <title>Alice with the Lion King</title>
+        <title>Lion ALice</title>
     </movie>
 </movies>

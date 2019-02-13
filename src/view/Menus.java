@@ -238,12 +238,13 @@ public class Menus {
 			}
 
 		}
-
-		if (chosen_cinema.getReservations().getlist() == null) {
-			reservation_id = 0;
-		} else {
-			reservation_id = chosen_cinema.getReservations().getlist().size();
+		
+		for(Cinema c: cinemas.getlist()){
+			if(c.getReservations().getlist() != null){				
+				reservation_id += c.getReservations().getlist().size();
+			}
 		}
+
 		reservation.setReservation_id(reservation_id+1);
 		chosen_cinema.getReservations().add(reservation);
 
@@ -310,14 +311,9 @@ public class Menus {
 		String cinema_path = "cinema_records.xml";
 		Cinemas cinemas = new Cinemas();
 		CinemaService cservice = new CinemaService();
-		
-		File f = new File(cinema_path);
-		if (error_service.isEmpty(f) == true) {
-			System.out.println("File is Empty!");
-			return;
-		}
 
-		cinemas = (Cinemas) files_manager.readMultipleObjects(cinema_path, cinemas);
+		cinemas = (Cinemas) files_manager.readMultipleObjects(cinema_path,
+				cinemas);
 		List<Reservation> reservation_list = new ArrayList<>();
 		List<Cinema> cs = new ArrayList<>();
 
@@ -397,7 +393,7 @@ public class Menus {
 			}
 			
 		}else{
-			System.out.println("No Reservation Made by the Customer.");
+			System.out.println("No Reservation made by the Customer.");
 		}
 		
 

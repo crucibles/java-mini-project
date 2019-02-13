@@ -250,7 +250,6 @@ public class InputService {
 	public String setFilteredTime(int type) {
 		boolean valid = true;
 		String time = "";
-		String[] parts;
 		
 		while (valid) {
 			if (type == 1) {
@@ -262,7 +261,6 @@ public class InputService {
 			time = sc.nextLine();
 			try {
 				if (es.isLegitTime(time)) {
-					parts = time.split(":");
 					valid = false;
 				} else {
 					System.out.println("Invalid input. Enter again.");

@@ -6,12 +6,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import model.Booking;
 import model.Cinema;
 import model.Cinemas;
 import model.HotSeat;
 import model.Movie;
 import model.Movies;
 import model.RegularSeat;
+import model.Reservation;
+import model.Reservations;
 import model.Seat;
 
 public class CinemaService {
@@ -150,6 +153,23 @@ public class CinemaService {
 		
 		return true;
 		
+	}
+	
+	public int getReservationCount(Cinemas cinemas) {
+		int count = 0;
+		List<Cinema> all_cinema = new ArrayList<Cinema>();
+		Reservations reservations = new Reservations();
+		List<Reservation> reservation_list = new ArrayList<Reservation>();
+		List<Booking> booking = new ArrayList<Booking>();
+		all_cinema = cinemas.getlist();
+		for(Cinema c: all_cinema){
+			reservations = c.getReservations();
+			reservation_list = reservations.getlist();
+			if(reservation_list != null){
+				count += reservation_list.size();
+			}
+		}
+		return count;
 	}
 
 } // end bracket
